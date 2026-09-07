@@ -61,7 +61,7 @@ const intensityChoices: Choice[] = [
 const impactChoices: Choice[] = [
   { label: "Poco", detail: "Puedo hacer la mayoría de mis cosas", value: 0 },
   { label: "Algo", detail: "Me cuesta concentrarme o descansar", value: 1 },
-  { label: "Bastante", detail: "Ya afecta escuela, sueño o relaciones", value: 3 },
+  { label: "Bastante", detail: "Ya afecta mis actividades, mi sueño o mis relaciones", value: 3 },
   { label: "Por completo", detail: "No puedo seguir con mi día", value: 4 },
 ];
 
@@ -144,13 +144,13 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
               <p className="eyebrow">Toma cerca de 2 minutos</p>
               <Dialog.Title asChild><h2>Primero ubicamos cómo estás. Después, te damos una salida clara.</h2></Dialog.Title>
               <p className="checkin-intro__lead">
-                No hay respuestas buenas o malas. Puedes salir cuando quieras y esta demo no guarda lo que elijas.
+                No hay respuestas buenas o malas. Puedes salir cuando quieras y esta demo no guarda tus respuestas.
               </p>
 
               <div className="consent-summary">
                 <p><Check aria-hidden="true" /> Orientación y bienestar general, no diagnóstico.</p>
                 <p><Check aria-hidden="true" /> Si detectamos una urgencia, pausamos el flujo y te mostramos ayuda directa.</p>
-                <p><LockKeyhole aria-hidden="true" /> En esta maqueta, tus respuestas permanecen solo en este dispositivo.</p>
+                <p><LockKeyhole aria-hidden="true" /> En esta maqueta, tus respuestas no salen de este dispositivo ni se almacenan.</p>
               </div>
 
               <label className="consent-check">
@@ -196,7 +196,7 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
             <Question eyebrow="Tu red" title="¿Hay alguien con quien puedas hablar hoy?" note="Puede ser una amistad, familiar, docente o profesional.">
               <ChoiceGrid choices={[
                 { label: "Sí, sé con quién", value: "yes" },
-                { label: "Tal vez, no estoy seguro", value: "unsure" },
+                { label: "Tal vez; no lo tengo claro", value: "unsure" },
                 { label: "No tengo a quién", value: "no" },
               ]} onSelect={(choice) => complete({ ...answers, support: choice.value as SupportAnswer })} />
             </Question>
@@ -205,7 +205,7 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
 
         <footer className="checkin__footer">
           <span><LockKeyhole aria-hidden="true" /> Demo sin registro ni almacenamiento</span>
-          <span>B Lance no sustituye atención profesional</span>
+          <span>B Lance no sustituye la atención profesional</span>
         </footer>
         </Dialog.Content>
       </Dialog.Portal>
@@ -239,11 +239,11 @@ function Outcome({
     steady: {
       eyebrow: "Puedes empezar por regular",
       title: "No tienes que resolverlo todo hoy.",
-      body: "Lo que sientes parece manejable con una pausa breve. Hagamos espacio en tu cuerpo y después decide qué necesitas.",
+      body: "Lo que sientes parece manejable con una pausa breve. Hagamos un poco de espacio y después podrás decidir qué necesitas.",
       Icon: HeartHandshake,
     },
     support: {
-      eyebrow: "Conviene acompañarlo",
+      eyebrow: "Conviene buscar apoyo",
       title: "Esto merece apoyo humano hoy.",
       body: "Por lo que compartiste, te recomendamos hablar con una persona de confianza o un profesional. No tienes que contar toda tu historia de una vez.",
       Icon: MessageCircleHeart,
@@ -251,7 +251,7 @@ function Outcome({
     urgent: {
       eyebrow: "Ayuda inmediata",
       title: "Paremos aquí. Tu seguridad es lo primero.",
-      body: "No te quedes a solas. Llama a emergencias o a Línea de la Vida y acércate a una persona de confianza ahora.",
+      body: "No te quedes a solas. Llama a los servicios de emergencia o a Línea de la Vida y acércate ahora a una persona de confianza.",
       Icon: ShieldAlert,
     },
   }[outcome];
@@ -266,7 +266,7 @@ function Outcome({
       {outcome === "urgent" ? (
         <div className="outcome__actions">
           <a className="button button--urgent button--wide" href="tel:911">Llamar al 911</a>
-          <a className="button button--paper button--wide" href="tel:8009112000">Línea de la Vida · 800 911 2000</a>
+          <a className="button button--paper button--wide" href="tel:8009112000">Línea de la Vida (México) · 800 911 2000</a>
           <button className="quiet-link" type="button" onClick={onHelp}>Ver todas las opciones de ayuda</button>
         </div>
       ) : (

@@ -45,7 +45,7 @@ export function RealtimePreview() {
       </div>
 
       <div className="realtime-card__footer">
-        <p><LockKeyhole aria-hidden="true" /> Solo información agregada. Nunca expone conversaciones individuales.</p>
+        <p><LockKeyhole aria-hidden="true" /> Solo muestra información agregada. Nunca expone conversaciones individuales.</p>
         <span className="realtime-card__scope">Vista previa institucional</span>
       </div>
     </div>

@@ -46,7 +46,7 @@ export function NotFoundPage() {
           <p>No hiciste nada mal. Regresa al inicio y retomamos desde un lugar conocido.</p>
           <div className="not-found__actions">
             <a className="button button--ink" href="/"><ArrowLeft aria-hidden="true" /> Volver al inicio</a>
-            <a className="button button--ghost" href="tel:8009112000"><HeartHandshake aria-hidden="true" /> Necesito apoyo</a>
+            <a className="button button--ghost" href="tel:8009112000"><HeartHandshake aria-hidden="true" /> Apoyo en México</a>
           </div>
           <small>Si hay peligro inmediato, llama al 911.</small>
         </m.div>

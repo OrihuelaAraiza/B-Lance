@@ -30,12 +30,12 @@ export function HelpPanel({ open, onClose }: HelpPanelProps) {
           </a>
           <a className="help-action" href="tel:8009112000">
             <Phone aria-hidden="true" />
-            <span><small>Gratis, 24 horas</small><strong>800 911 2000</strong></span>
+            <span><small>México · disponible las 24 horas</small><strong>800 911 2000</strong></span>
           </a>
         </div>
 
         <p className="help-panel__note">
-          Línea de la Vida ofrece orientación en salud mental en México las 24 horas, todos los días. Si estás fuera de México, llama al número de emergencias de tu país.
+          En México, Línea de la Vida ofrece orientación en salud mental las 24 horas, todos los días. Si estás fuera de México, llama al número de emergencias de tu país.
         </p>
         <a className="text-link" href="https://www.gob.mx/lineadelavida" target="_blank" rel="noreferrer">
           Sitio oficial de Línea de la Vida <ExternalLink aria-hidden="true" />

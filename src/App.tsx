@@ -58,14 +58,14 @@ const spheres = [
   {
     key: "relaciones",
     label: "Una relación",
-    response: "Vamos a entender qué necesitas para sentirte más seguro.",
+    response: "Vamos a entender qué necesitas para recuperar un poco de seguridad.",
     Icon: UsersRound,
   },
 ];
 
 const supportPaths = [
   { number: "01", title: "Te escucha", text: "Mensajes breves, lenguaje cercano y sin interrogatorios.", color: "pink" },
-  { number: "02", title: "Ubica contigo", text: "Un check-in rápido reconoce intensidad, impacto y seguridad.", color: "lilac" },
+  { number: "02", title: "Te ayuda a ubicarlo", text: "Un check-in rápido reconoce la intensidad, el impacto y la seguridad.", color: "lilac" },
   { number: "03", title: "Te da una salida", text: "Una pausa guiada, una persona de confianza o ayuda inmediata.", color: "mint" },
 ];
 
@@ -98,10 +98,11 @@ function App() {
               className="sound-toggle"
               type="button"
               aria-pressed={soundEnabled}
+              aria-label={`Sonido ${soundEnabled ? "activado" : "desactivado"}`}
               onClick={() => setSoundEnabled((value) => !value)}
             >
               {soundEnabled ? <Volume2 aria-hidden="true" /> : <VolumeX aria-hidden="true" />}
-              <span>Sonido {soundEnabled ? "sí" : "no"}</span>
+              <span>Sonido {soundEnabled ? "activado" : "desactivado"}</span>
             </button>
             <button className="button button--small button--paper" type="button" onClick={() => setHelpOpen(true)}>Ayuda ahora</button>
           </div>
@@ -134,8 +135,8 @@ function App() {
               </div>
               <div className="hero__trust">
                 <span><LockKeyhole aria-hidden="true" /> Demo sin registro</span>
-                <span><ShieldCheck aria-hidden="true" /> No diagnostica</span>
-                <span><CircleUserRound aria-hidden="true" /> Para jóvenes de 10 a 29</span>
+                <span><ShieldCheck aria-hidden="true" /> No ofrece diagnósticos</span>
+                <span><CircleUserRound aria-hidden="true" /> Para jóvenes de 10 a 29 años</span>
               </div>
             </m.div>
 
@@ -154,7 +155,7 @@ function App() {
               <div className="pulse-card__conversation">
                 <div className="message message--romi">
                   <span className="message__avatar">B</span>
-                  <p>No necesitas explicarlo perfecto. ¿Qué se parece más a lo que traes hoy?</p>
+                  <p>No necesitas encontrar las palabras perfectas. ¿Qué se parece más a lo que traes hoy?</p>
                 </div>
                 <div className="sphere-picker">
                   {spheres.map((sphere) => (
@@ -199,7 +200,7 @@ function App() {
                 <p className="eyebrow">Una conversación que sí llega a algo</p>
                 <h2>Dos minutos.<br />Una salida clara.</h2>
               </div>
-              <p>No queremos que una persona cansada tenga que leer párrafos eternos. Cada interacción reduce carga y acerca una decisión concreta.</p>
+              <p>No queremos que una persona cansada tenga que leer párrafos eternos. Cada interacción reduce la carga y facilita una decisión concreta.</p>
             </div>
 
             <div className="path-grid">
@@ -235,9 +236,9 @@ function App() {
         <section className="section section--ink sensory-section">
           <div className="shell sensory-section__grid">
             <div className="sensory-section__copy">
-              <p className="eyebrow eyebrow--light">PIP · mindfulness sensorial</p>
-              <h2>Tu cuerpo también puede decir: “ya bajó un poco”.</h2>
-              <p>Movimiento lento, sonido opcional y respiración guiada. Diseñado para sumar calma, nunca estímulo de más.</p>
+              <p className="eyebrow eyebrow--light">PIP · atención plena sensorial</p>
+              <h2>Tu cuerpo también puede decir: «Ya bajó un poco».</h2>
+              <p>Movimiento lento, sonido opcional y respiración guiada. Todo está diseñado para sumar calma sin añadir estímulos de más.</p>
               <button className="button button--cream" type="button" onClick={() => setBreathingOpen(true)}>
                 <Headphones aria-hidden="true" /> Probar pausa de 50 segundos
               </button>
@@ -248,7 +249,7 @@ function App() {
                 animate={reduceMotion ? undefined : { rotate: [0, 2.5, -1.5, 0], scale: [1, 1.018, 1] }}
                 transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
               ><i /><i /><i /><span /></m.div>
-              <div className="sensory-stage__caption"><Music2 /><span>inhala</span><b>4</b><span>suelta</span><b>6</b></div>
+              <div className="sensory-stage__caption"><Music2 /><span>inhala</span><b>4 s</b><span>suelta</span><b>6 s</b></div>
             </div>
           </div>
         </section>
@@ -257,12 +258,12 @@ function App() {
           <div className="shell institutional-section__grid">
             <div>
               <p className="eyebrow">Para escuelas e instituciones</p>
-              <h2>Del primer mensaje a una prevención que sí se puede leer.</h2>
+              <h2>Del primer mensaje a señales que sí ayudan a prevenir.</h2>
               <p className="section-lead">
-                B Lance conecta una entrada contextual por QR, un flujo conversacional breve y señales agregadas para orientar intervenciones de salud mental sin exhibir historias individuales.
+                B Lance conecta un acceso contextual mediante código QR, un flujo conversacional breve y señales agregadas para orientar intervenciones de salud mental sin exhibir historias individuales.
               </p>
               <ul className="feature-list">
-                <li><QrCode aria-hidden="true" /><span><strong>Entrada contextual</strong>QR por plantel, zona y nivel educativo.</span></li>
+                <li><QrCode aria-hidden="true" /><span><strong>Entrada contextual</strong>Códigos QR por plantel, zona y nivel educativo.</span></li>
                 <li><MessageCircle aria-hidden="true" /><span><strong>Lenguaje que se adapta</strong>Mensajes cercanos según edad y contexto.</span></li>
                 <li><BarChart3 aria-hidden="true" /><span><strong>Inteligencia poblacional</strong>Indicadores por esfera, territorio y tendencia.</span></li>
                 <li><BookOpenCheck aria-hidden="true" /><span><strong>Continuidad clínica</strong>Resumen estructurado para evitar volver a contar todo.</span></li>
@@ -278,7 +279,7 @@ function App() {
             <div className="privacy-card__copy">
               <p className="eyebrow">Un límite que no se negocia</p>
               <h2>Lo que sientes no es una calificación.</h2>
-              <p>Los datos emocionales no deben usarse para castigar, disciplinar, vender o perfilar. Las instituciones reciben tendencias agregadas, no conversaciones personales.</p>
+              <p>Los datos emocionales no deben utilizarse para castigar, disciplinar o perfilar a nadie, ni venderse. Las instituciones reciben tendencias agregadas, no conversaciones personales.</p>
             </div>
             <div className="privacy-card__checks">
               <span><Check aria-hidden="true" /> Sin uso punitivo</span>
@@ -297,7 +298,7 @@ function App() {
               <button className="button button--ink" type="button" onClick={() => setCheckInOpen(true)}>Hacer mi check-in <ArrowRight aria-hidden="true" /></button>
               <button className="quiet-link" type="button" onClick={() => setHelpOpen(true)}>Necesito ayuda inmediata</button>
             </div>
-            <p className="final-cta__note">B Lance brinda orientación de bienestar general y no sustituye una consulta con profesionales de la salud.</p>
+            <p className="final-cta__note">B Lance brinda orientación sobre bienestar general y no sustituye una consulta con profesionales de la salud.</p>
           </div>
         </section>
       </main>

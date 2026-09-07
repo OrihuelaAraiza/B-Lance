@@ -67,7 +67,7 @@ export function BreathingRoom({ open, onClose }: BreathingRoomProps) {
         <div className="breathing-controls">
           <button className="button button--ink" type="button" onClick={() => finished ? reset() : setRunning((value) => !value)}>
             {finished ? <RotateCcw aria-hidden="true" /> : running ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
-            {finished ? "Hacer otra vez" : running ? "Pausar" : "Empezar"}
+            {finished ? "Repetir la pausa" : running ? "Pausar" : "Empezar"}
           </button>
           <span>{Math.min(elapsed, SESSION_SECONDS)} / {SESSION_SECONDS} s</span>
         </div>
