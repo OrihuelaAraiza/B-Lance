@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
 import { ExternalLink, Phone, X } from "lucide-react";
 
 type HelpPanelProps = {
@@ -7,37 +7,21 @@ type HelpPanelProps = {
 };
 
 export function HelpPanel({ open, onClose }: HelpPanelProps) {
-  const closeButton = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    closeButton.current?.focus();
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onClose, open]);
-
-  if (!open) return null;
-
   return (
-    <div className="overlay overlay--urgent" role="presentation" onMouseDown={onClose}>
-      <section
-        aria-labelledby="help-title"
-        aria-modal="true"
-        className="help-panel"
-        role="dialog"
-        onMouseDown={(event) => event.stopPropagation()}
-      >
-        <button ref={closeButton} className="icon-button help-panel__close" type="button" onClick={onClose} aria-label="Cerrar opciones de ayuda">
-          <X aria-hidden="true" />
-        </button>
+    <Dialog.Root open={open} onOpenChange={(nextOpen) => { if (!nextOpen) onClose(); }}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="overlay overlay--urgent" />
+        <Dialog.Content className="help-panel" aria-describedby="help-description">
+          <Dialog.Close asChild>
+            <button className="icon-button help-panel__close" type="button" aria-label="Cerrar opciones de ayuda">
+              <X aria-hidden="true" />
+            </button>
+          </Dialog.Close>
         <p className="eyebrow">Ayuda ahora</p>
-        <h2 id="help-title">Tu seguridad va primero.</h2>
-        <p className="help-panel__lead">
+        <Dialog.Title asChild><h2>Tu seguridad va primero.</h2></Dialog.Title>
+        <Dialog.Description asChild><p className="help-panel__lead" id="help-description">
           Si hay peligro inmediato o sientes que podrías lastimarte, no te quedes a solas. Llama ahora o acércate a una persona de confianza.
-        </p>
+        </p></Dialog.Description>
 
         <div className="help-actions">
           <a className="help-action help-action--primary" href="tel:911">
@@ -56,7 +40,8 @@ export function HelpPanel({ open, onClose }: HelpPanelProps) {
         <a className="text-link" href="https://www.gob.mx/lineadelavida" target="_blank" rel="noreferrer">
           Sitio oficial de Línea de la Vida <ExternalLink aria-hidden="true" />
         </a>
-      </section>
-    </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

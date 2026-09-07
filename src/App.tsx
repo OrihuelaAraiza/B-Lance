@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import {
   ArrowDown,
   ArrowRight,
@@ -69,17 +70,12 @@ const supportPaths = [
 ];
 
 function App() {
+  const reduceMotion = useReducedMotion();
   const [selectedSphere, setSelectedSphere] = useState(spheres[0]);
   const [checkInOpen, setCheckInOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [breathingOpen, setBreathingOpen] = useState(false);
   const { enabled: soundEnabled, setEnabled: setSoundEnabled, play: playSound } = useSoftSound();
-
-  useEffect(() => {
-    const overlayOpen = checkInOpen || helpOpen || breathingOpen;
-    document.body.style.overflow = overlayOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [breathingOpen, checkInOpen, helpOpen]);
 
   const selectSphere = (sphere: typeof spheres[number]) => {
     playSound();
@@ -118,8 +114,12 @@ function App() {
             <i /><i /><i />
           </div>
           <div className="shell hero__grid">
-            <div className="hero__copy">
-              <div className="availability"><span /> Un espacio para cuando algo pesa</div>
+            <m.div
+              className="hero__copy"
+              initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, ease: "easeOut" }}
+            >
               <h1>Aquí puedes<br /><em>bajar el ruido.</em></h1>
               <p className="hero__lead">
                 B Lance es una primera pausa para entender cómo estás y encontrar el siguiente paso. Sin diagnósticos. Sin juicios. A tu ritmo.
@@ -137,9 +137,16 @@ function App() {
                 <span><ShieldCheck aria-hidden="true" /> No diagnostica</span>
                 <span><CircleUserRound aria-hidden="true" /> Para jóvenes de 10 a 29</span>
               </div>
-            </div>
+            </m.div>
 
-            <div className="pulse-card" aria-label="Vista previa interactiva de B Lance">
+            <m.div
+              className="pulse-card"
+              aria-label="Vista previa interactiva de B Lance"
+              initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.985 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              whileHover={reduceMotion ? undefined : { y: -4 }}
+              transition={{ duration: 0.72, delay: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
+            >
               <div className="pulse-card__top">
                 <div className="mini-brand"><span>B</span><strong>B Lance</strong></div>
                 <div className="pulse-card__status"><span /> contigo</div>
@@ -151,26 +158,36 @@ function App() {
                 </div>
                 <div className="sphere-picker">
                   {spheres.map((sphere) => (
-                    <button
+                    <m.button
                       className={selectedSphere.key === sphere.key ? "is-selected" : ""}
                       key={sphere.key}
                       type="button"
                       onClick={() => selectSphere(sphere)}
+                      whileTap={reduceMotion ? undefined : { scale: 0.98 }}
                     >
                       <sphere.Icon aria-hidden="true" /> {sphere.label}
-                    </button>
+                    </m.button>
                   ))}
                 </div>
-                <div className="message message--romi message--reply" key={selectedSphere.key}>
-                  <span className="message__avatar">B</span>
-                  <p>{selectedSphere.response}</p>
-                </div>
+                <AnimatePresence mode="wait" initial={false}>
+                  <m.div
+                    className="message message--romi message--reply"
+                    key={selectedSphere.key}
+                    initial={reduceMotion ? false : { opacity: 0, y: 7 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={reduceMotion ? undefined : { opacity: 0, y: -5 }}
+                    transition={{ duration: 0.24, ease: "easeOut" }}
+                  >
+                    <span className="message__avatar">B</span>
+                    <p>{selectedSphere.response}</p>
+                  </m.div>
+                </AnimatePresence>
               </div>
               <button className="pulse-card__cta" type="button" onClick={() => setCheckInOpen(true)}>
                 Seguir con mi check-in <ArrowRight aria-hidden="true" />
               </button>
               <div className="balance-orb" aria-hidden="true"><i /><i /><i /></div>
-            </div>
+            </m.div>
           </div>
           <a className="scroll-cue" href="#como-funciona">Descubre cómo te acompaña <ArrowDown aria-hidden="true" /></a>
         </section>
@@ -187,11 +204,16 @@ function App() {
 
             <div className="path-grid">
               {supportPaths.map((path) => (
-                <article className={`path-card path-card--${path.color}`} key={path.number}>
+                <m.article
+                  className={`path-card path-card--${path.color}`}
+                  key={path.number}
+                  whileHover={reduceMotion ? undefined : { y: -6 }}
+                  transition={{ duration: 0.22, ease: "easeOut" }}
+                >
                   <span>{path.number}</span>
                   <h3>{path.title}</h3>
                   <p>{path.text}</p>
-                </article>
+                </m.article>
               ))}
             </div>
 
@@ -221,7 +243,11 @@ function App() {
               </button>
             </div>
             <div className="sensory-stage" aria-hidden="true">
-              <div className="sensory-stage__rings"><i /><i /><i /><span /></div>
+              <m.div
+                className="sensory-stage__rings"
+                animate={reduceMotion ? undefined : { rotate: [0, 2.5, -1.5, 0], scale: [1, 1.018, 1] }}
+                transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+              ><i /><i /><i /><span /></m.div>
               <div className="sensory-stage__caption"><Music2 /><span>inhala</span><b>4</b><span>suelta</span><b>6</b></div>
             </div>
           </div>
@@ -287,7 +313,12 @@ function App() {
         </div>
       </footer>
 
-      <button className="mobile-help" type="button" onClick={() => setHelpOpen(true)}>Ayuda ahora</button>
+      <m.button
+        className="mobile-help"
+        type="button"
+        onClick={() => setHelpOpen(true)}
+        whileTap={reduceMotion ? undefined : { scale: 0.97 }}
+      >Ayuda ahora</m.button>
 
       <CheckIn
         open={checkInOpen}

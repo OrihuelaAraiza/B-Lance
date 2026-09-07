@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
 import { Pause, Play, RotateCcw, X } from "lucide-react";
 
 type BreathingRoomProps = {
@@ -33,22 +34,24 @@ export function BreathingRoom({ open, onClose }: BreathingRoomProps) {
     }
   }, [open]);
 
-  if (!open) return null;
-
   const reset = () => {
     setElapsed(0);
     setRunning(false);
   };
 
   return (
-    <div className="overlay overlay--breathing" role="presentation">
-      <section className="breathing-room" role="dialog" aria-modal="true" aria-labelledby="breathing-title">
-        <button className="icon-button breathing-room__close" type="button" onClick={onClose} aria-label="Cerrar pausa guiada">
-          <X aria-hidden="true" />
-        </button>
+    <Dialog.Root open={open} onOpenChange={(nextOpen) => { if (!nextOpen) onClose(); }}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="overlay overlay--breathing" />
+        <Dialog.Content className="breathing-room" aria-describedby={undefined}>
+          <Dialog.Close asChild>
+            <button className="icon-button breathing-room__close" type="button" aria-label="Cerrar pausa guiada">
+              <X aria-hidden="true" />
+            </button>
+          </Dialog.Close>
         <div className="breathing-room__copy">
           <p className="eyebrow">Pausa sensorial · 50 segundos</p>
-          <h2 id="breathing-title">Solo sigue el ritmo.</h2>
+          <Dialog.Title asChild><h2>Solo sigue el ritmo.</h2></Dialog.Title>
           <p>No tienes que resolver nada mientras respiras.</p>
         </div>
 
@@ -68,7 +71,8 @@ export function BreathingRoom({ open, onClose }: BreathingRoomProps) {
           </button>
           <span>{Math.min(elapsed, SESSION_SECONDS)} / {SESSION_SECONDS} s</span>
         </div>
-      </section>
-    </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

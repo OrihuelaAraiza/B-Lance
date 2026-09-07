@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
 import {
   ArrowLeft,
   ArrowRight,
@@ -69,7 +70,6 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
   const [accepted, setAccepted] = useState(false);
   const [answers, setAnswers] = useState<ScreeningAnswers>(defaultAnswers);
   const [outcome, setOutcome] = useState<ScreeningOutcome | null>(null);
-  const closeButton = useRef<HTMLButtonElement>(null);
 
   const reset = useCallback(() => {
     setStep(0);
@@ -82,18 +82,6 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
     onClose();
     window.setTimeout(reset, 250);
   }, [onClose, reset]);
-
-  useEffect(() => {
-    if (!open) return;
-    closeButton.current?.focus();
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") dismiss();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [dismiss, open]);
-
-  if (!open) return null;
 
   const advance = (next: ScreeningAnswers, nextStep: number) => {
     playSound();
@@ -117,8 +105,10 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
   };
 
   return (
-    <div className="overlay checkin-overlay" role="presentation">
-      <section className={`checkin${outcome ? ` checkin--${outcome}` : ""}`} role="dialog" aria-modal="true" aria-labelledby="checkin-title">
+    <Dialog.Root open={open} onOpenChange={(nextOpen) => { if (!nextOpen) dismiss(); }}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="overlay checkin-overlay" />
+        <Dialog.Content className={`checkin${outcome ? ` checkin--${outcome}` : ""}`} aria-describedby={undefined}>
         <header className="checkin__header">
           <div className="checkin__header-left">
             {(step > 0 || outcome) && (
@@ -131,9 +121,11 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
               <small>{outcome ? "Tu siguiente paso" : step === 0 ? "Antes de empezar" : `Pregunta ${step} de 5`}</small>
             </div>
           </div>
-          <button ref={closeButton} className="icon-button" type="button" onClick={dismiss} aria-label="Cerrar check-in">
-            <X aria-hidden="true" />
-          </button>
+          <Dialog.Close asChild>
+            <button className="icon-button" type="button" aria-label="Cerrar check-in">
+              <X aria-hidden="true" />
+            </button>
+          </Dialog.Close>
         </header>
 
         <div className="checkin__progress" aria-hidden="true"><i style={{ width: `${outcome ? 100 : (step / 5) * 100}%` }} /></div>
@@ -150,7 +142,7 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
             <div className="checkin-intro">
               <span className="checkin-intro__icon"><Sparkles aria-hidden="true" /></span>
               <p className="eyebrow">Toma cerca de 2 minutos</p>
-              <h2 id="checkin-title">Primero ubicamos cómo estás. Después, te damos una salida clara.</h2>
+              <Dialog.Title asChild><h2>Primero ubicamos cómo estás. Después, te damos una salida clara.</h2></Dialog.Title>
               <p className="checkin-intro__lead">
                 No hay respuestas buenas o malas. Puedes salir cuando quieras y esta demo no guarda lo que elijas.
               </p>
@@ -215,8 +207,9 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
           <span><LockKeyhole aria-hidden="true" /> Demo sin registro ni almacenamiento</span>
           <span>B Lance no sustituye atención profesional</span>
         </footer>
-      </section>
-    </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 
@@ -224,7 +217,7 @@ function Question({ eyebrow, title, note, children }: { eyebrow: string; title: 
   return (
     <div className="question">
       <p className="eyebrow">{eyebrow}</p>
-      <h2 id="checkin-title">{title}</h2>
+      <Dialog.Title asChild><h2>{title}</h2></Dialog.Title>
       <p className="question__note">{note}</p>
       {children}
     </div>
@@ -267,7 +260,7 @@ function Outcome({
     <div className="outcome">
       <span className="outcome__icon"><content.Icon aria-hidden="true" /></span>
       <p className="eyebrow">{content.eyebrow}</p>
-      <h2 id="checkin-title">{content.title}</h2>
+      <Dialog.Title asChild><h2>{content.title}</h2></Dialog.Title>
       <p className="outcome__body">{content.body}</p>
 
       {outcome === "urgent" ? (
