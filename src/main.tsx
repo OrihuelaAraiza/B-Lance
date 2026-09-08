@@ -6,6 +6,7 @@ import "@fontsource-variable/fraunces/wght-italic.css";
 import App from "./App";
 import { NotFoundPage } from "./components/NotFoundPage";
 import "./styles.css";
+import "./visual-refinements.css";
 
 const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
 const isKnownEntry = pathname === "/" || pathname === "/index.html";
