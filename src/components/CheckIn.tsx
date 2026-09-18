@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
   ArrowLeft,
@@ -66,6 +66,9 @@ const impactChoices: Choice[] = [
 ];
 
 export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound }: CheckInProps) {
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
+  const restoreFocus = useRef(true);
   const [step, setStep] = useState(0);
   const [accepted, setAccepted] = useState(false);
   const [answers, setAnswers] = useState<ScreeningAnswers>(defaultAnswers);
@@ -80,8 +83,22 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
 
   const dismiss = useCallback(() => {
     onClose();
-    window.setTimeout(reset, 250);
+    reset();
   }, [onClose, reset]);
+
+  useEffect(() => {
+    if (!open) reset();
+  }, [open, reset]);
+
+  useEffect(() => {
+    if (open) bodyRef.current?.querySelector<HTMLElement>("h2")?.focus();
+  }, [open, step, outcome]);
+
+  const showHelp = () => {
+    restoreFocus.current = false;
+    dismiss();
+    onOpenHelp();
+  };
 
   const advance = (next: ScreeningAnswers, nextStep: number) => {
     playSound();
@@ -108,7 +125,18 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
     <Dialog.Root open={open} onOpenChange={(nextOpen) => { if (!nextOpen) dismiss(); }}>
       <Dialog.Portal>
         <Dialog.Overlay className="overlay checkin-overlay" />
-        <Dialog.Content className={`checkin${outcome ? ` checkin--${outcome}` : ""}`} aria-describedby={undefined}>
+        <Dialog.Content className={`checkin${outcome ? ` checkin--${outcome}` : ""}`} aria-describedby={undefined}
+          onOpenAutoFocus={(event) => {
+            event.preventDefault();
+            opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+            restoreFocus.current = true;
+            bodyRef.current?.querySelector<HTMLElement>("h2")?.focus();
+          }}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            if (restoreFocus.current) opener.current?.focus();
+          }}
+        >
         <header className="checkin__header">
           <div className="checkin__header-left">
             {(step > 0 || outcome) && (
@@ -121,6 +149,7 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
               <small>{outcome ? "Tu siguiente paso" : step === 0 ? "Antes de empezar" : `Pregunta ${step} de 5`}</small>
             </div>
           </div>
+          <button className="quiet-link checkin__help" type="button" onClick={showHelp}>Ayuda ahora</button>
           <Dialog.Close asChild>
             <button className="icon-button" type="button" aria-label="Cerrar check-in">
               <X aria-hidden="true" />
@@ -130,19 +159,19 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
 
         <div className="checkin__progress" aria-hidden="true"><i style={{ width: `${outcome ? 100 : (step / 5) * 100}%` }} /></div>
 
-        <div className="checkin__body" aria-live="polite">
+        <div className="checkin__body" ref={bodyRef}>
           {outcome ? (
             <Outcome
               outcome={outcome}
-              onBreathing={() => { dismiss(); onOpenBreathing(); }}
-              onHelp={() => { dismiss(); onOpenHelp(); }}
+              onBreathing={() => { restoreFocus.current = false; dismiss(); onOpenBreathing(); }}
+              onHelp={showHelp}
               onReset={reset}
             />
           ) : step === 0 ? (
             <div className="checkin-intro">
               <span className="checkin-intro__icon"><Sparkles aria-hidden="true" /></span>
               <p className="eyebrow">Toma cerca de 2 minutos</p>
-              <Dialog.Title asChild><h2>Primero ubicamos cómo estás. Después, te damos una salida clara.</h2></Dialog.Title>
+              <Dialog.Title asChild><h2 tabIndex={-1}>Primero ubicamos cómo estás. Después, te damos una salida clara.</h2></Dialog.Title>
               <p className="checkin-intro__lead">
                 No hay respuestas buenas o malas. Puedes salir cuando quieras y esta demo no guarda tus respuestas.
               </p>
@@ -161,7 +190,7 @@ export function CheckIn({ open, onClose, onOpenHelp, onOpenBreathing, playSound 
               <button className="button button--coral button--wide" type="button" disabled={!accepted} onClick={() => advance(answers, 1)}>
                 Empezar mi check-in <ArrowRight aria-hidden="true" />
               </button>
-              <button className="quiet-link" type="button" onClick={() => { dismiss(); onOpenHelp(); }}>Necesito ayuda inmediata</button>
+              <button className="quiet-link" type="button" onClick={showHelp}>Necesito ayuda inmediata</button>
             </div>
           ) : step === 1 ? (
             <Question eyebrow="Tu seguridad" title="¿Estás en peligro ahora o alguien puede lastimarte?" note="Si la respuesta es sí, iremos directo a opciones de ayuda.">
@@ -217,7 +246,7 @@ function Question({ eyebrow, title, note, children }: { eyebrow: string; title: 
   return (
     <div className="question">
       <p className="eyebrow">{eyebrow}</p>
-      <Dialog.Title asChild><h2>{title}</h2></Dialog.Title>
+      <Dialog.Title asChild><h2 tabIndex={-1}>{title}</h2></Dialog.Title>
       <p className="question__note">{note}</p>
       {children}
     </div>
@@ -239,7 +268,7 @@ function Outcome({
     steady: {
       eyebrow: "Puedes empezar por regular",
       title: "No tienes que resolverlo todo hoy.",
-      body: "Lo que sientes parece manejable con una pausa breve. Hagamos un poco de espacio y después podrás decidir qué necesitas.",
+      body: "Si te sirve, puedes tomar una pausa breve y después decidir qué necesitas. También puedes buscar apoyo; esta demo no evalúa tu estado de salud.",
       Icon: HeartHandshake,
     },
     support: {
@@ -260,7 +289,7 @@ function Outcome({
     <div className="outcome">
       <span className="outcome__icon"><content.Icon aria-hidden="true" /></span>
       <p className="eyebrow">{content.eyebrow}</p>
-      <Dialog.Title asChild><h2>{content.title}</h2></Dialog.Title>
+      <Dialog.Title asChild><h2 tabIndex={-1}>{content.title}</h2></Dialog.Title>
       <p className="outcome__body">{content.body}</p>
 
       {outcome === "urgent" ? (
@@ -272,7 +301,7 @@ function Outcome({
       ) : (
         <div className="outcome__actions">
           <button className="button button--ink button--wide" type="button" onClick={onBreathing}>Hacer una pausa guiada</button>
-          {outcome === "support" && <button className="button button--paper button--wide" type="button" onClick={onHelp}>Ver opciones de apoyo</button>}
+          <button className="button button--paper button--wide" type="button" onClick={onHelp}>Ver opciones de apoyo</button>
           <button className="quiet-link" type="button" onClick={onReset}><RotateCcw aria-hidden="true" /> Repetir check-in</button>
         </div>
       )}

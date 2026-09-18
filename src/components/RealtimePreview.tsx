@@ -1,20 +1,7 @@
 import { useState } from "react";
+import { demoViews as views } from "../data/demo";
 import { LockKeyhole } from "lucide-react";
 
-const views = {
-  esferas: [
-    { label: "Académica", value: 68, color: "var(--coral)" },
-    { label: "Individual", value: 52, color: "var(--lilac)" },
-    { label: "Familiar", value: 31, color: "var(--mint-deep)" },
-    { label: "Social", value: 24, color: "var(--yellow-deep)" },
-  ],
-  tendencia: [
-    { label: "Semana 1", value: 35, color: "var(--lilac)" },
-    { label: "Semana 2", value: 47, color: "var(--lilac)" },
-    { label: "Semana 3", value: 42, color: "var(--lilac)" },
-    { label: "Semana 4", value: 58, color: "var(--lilac)" },
-  ],
-};
 
 export function RealtimePreview() {
   const [view, setView] = useState<keyof typeof views>("esferas");
@@ -29,12 +16,13 @@ export function RealtimePreview() {
         <span className="demo-label">Datos ilustrativos</span>
       </div>
 
-      <div className="segmented" aria-label="Vista de datos">
-        <button type="button" className={view === "esferas" ? "is-active" : ""} onClick={() => setView("esferas")}>Por esfera</button>
-        <button type="button" className={view === "tendencia" ? "is-active" : ""} onClick={() => setView("tendencia")}>Tendencia</button>
+      <div className="segmented" role="group" aria-label="Vista de datos">
+        <button type="button" aria-pressed={view === "esferas"} className={view === "esferas" ? "is-active" : ""} onClick={() => setView("esferas")}>Por esfera</button>
+        <button type="button" aria-pressed={view === "tendencia"} className={view === "tendencia" ? "is-active" : ""} onClick={() => setView("tendencia")}>Tendencia</button>
       </div>
 
-      <div className="bar-chart" role="img" aria-label={view === "esferas" ? "Distribución ilustrativa por esfera" : "Tendencia ilustrativa por semana"}>
+      <p className="chart-unit" id="chart-unit">Cantidad de selecciones ficticias {view === "esferas" ? "por esfera" : "por semana"}. No son porcentajes.</p>
+      <div className="bar-chart" aria-hidden="true">
         {views[view].map((item) => (
           <div className="bar-chart__row" key={item.label}>
             <span>{item.label}</span>
@@ -44,8 +32,13 @@ export function RealtimePreview() {
         ))}
       </div>
 
+      <table className="sr-only">
+        <caption>Datos ilustrativos: cantidad de selecciones ficticias {view === "esferas" ? "por esfera" : "por semana"}</caption>
+        <thead><tr><th scope="col">{view === "esferas" ? "Esfera" : "Semana"}</th><th scope="col">Selecciones ficticias</th></tr></thead>
+        <tbody>{views[view].map((item) => <tr key={item.label}><th scope="row">{item.label}</th><td>{item.value}</td></tr>)}</tbody>
+      </table>
       <div className="realtime-card__footer">
-        <p><LockKeyhole aria-hidden="true" /> Solo muestra información agregada. Nunca expone conversaciones individuales.</p>
+        <p><LockKeyhole aria-hidden="true" /> Ejemplo con datos ficticios. No está conectado a respuestas ni a conversaciones.</p>
         <span className="realtime-card__scope">Vista previa institucional</span>
       </div>
     </div>

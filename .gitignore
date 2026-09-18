@@ -5,3 +5,7 @@ dist
 coverage
 .vite
 .pnpm-store
+releases
+playwright-report
+test-results
+.vercel

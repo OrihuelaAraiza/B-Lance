@@ -1,0 +1,44 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "installCommand": "npx --yes pnpm@11.19.0 install --frozen-lockfile",
+  "buildCommand": "npx --yes pnpm@11.19.0 run build",
+  "outputDirectory": "dist",
+  "routes": [
+    {
+      "src": "/(.*)",
+      "headers": {
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+        "X-Frame-Options": "DENY",
+        "Content-Security-Policy": "default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+        "Cache-Control": "no-cache"
+      },
+      "continue": true
+    },
+    {
+      "src": "/\\.htaccess",
+      "dest": "/404.html",
+      "status": 404
+    },
+    {
+      "src": "/assets/.*-[A-Za-z0-9_-]{8,}\\.(js|css|woff2)",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      },
+      "continue": true
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/404.html",
+      "status": 404,
+      "headers": {
+        "Cache-Control": "no-cache"
+      }
+    }
+  ]
+}

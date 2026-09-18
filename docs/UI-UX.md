@@ -1,5 +1,7 @@
 # B-Lance: refinamiento visual sobre la identidad original
 
+Este documento registra el refinamiento inicial del 8 de septiembre de 2026. La etapa posterior 0.2 también mejora navegación, accesibilidad y recorridos; consultar [DEMO-READINESS.md](DEMO-READINESS.md) y [HOSTGATOR.md](HOSTGATOR.md). Las comparaciones con la versión original que siguen corresponden a aquella entrega inicial.
+
 ## Alcance corregido
 
 Se conserva la paleta original (crema, coral, rosa, lila, menta y tinta oscura), el logo, el contenido, las secciones, la navegación y todos los componentes originales. Se retiró la propuesta de dashboard salvia y sus flujos añadidos.

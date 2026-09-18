@@ -5,6 +5,6 @@ export default defineConfig({
   plugins: [react()],
   build: {
     target: "es2020",
-    sourcemap: true,
+    sourcemap: false,
   },
 });

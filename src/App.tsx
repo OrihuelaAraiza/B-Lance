@@ -1,28 +1,26 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import {
   ArrowDown,
   ArrowRight,
   BarChart3,
   BookOpenCheck,
-  Brain,
   Check,
   CircleUserRound,
   Headphones,
-  Heart,
-  Home,
   LockKeyhole,
   MessageCircle,
+  Menu,
+  X,
   Music2,
   Pause,
   QrCode,
-  School,
   ShieldCheck,
   Sparkles,
-  UsersRound,
   Volume2,
   VolumeX,
 } from "lucide-react";
+import { spheres, supportPaths } from "./data/demo";
 import { BrandMark } from "./components/BrandMark";
 import { BreathingRoom } from "./components/BreathingRoom";
 import { CheckIn } from "./components/CheckIn";
@@ -30,46 +28,9 @@ import { HelpPanel } from "./components/HelpPanel";
 import { RealtimePreview } from "./components/RealtimePreview";
 import { useSoftSound } from "./hooks/useSoftSound";
 
-const spheres = [
-  {
-    key: "mente",
-    label: "Mi mente no para",
-    response: "Vamos a bajar el volumen, una pregunta a la vez.",
-    Icon: Brain,
-  },
-  {
-    key: "cuerpo",
-    label: "Lo siento en el cuerpo",
-    response: "Primero ubicamos la sensación. No tienes que pelear con ella.",
-    Icon: Heart,
-  },
-  {
-    key: "escuela",
-    label: "Escuela o trabajo",
-    response: "Podemos separar lo urgente de lo que puede esperar.",
-    Icon: School,
-  },
-  {
-    key: "casa",
-    label: "Algo en casa",
-    response: "Este es un espacio para ordenar lo que está pasando, sin juicios.",
-    Icon: Home,
-  },
-  {
-    key: "relaciones",
-    label: "Una relación",
-    response: "Vamos a entender qué necesitas para recuperar un poco de seguridad.",
-    Icon: UsersRound,
-  },
-];
-
-const supportPaths = [
-  { number: "01", title: "Te escucha", text: "Mensajes breves, lenguaje cercano y sin interrogatorios.", color: "pink" },
-  { number: "02", title: "Te ayuda a ubicarlo", text: "Un check-in rápido reconoce la intensidad, el impacto y la seguridad.", color: "lilac" },
-  { number: "03", title: "Te da una salida", text: "Una pausa guiada, una persona de confianza o ayuda inmediata.", color: "mint" },
-];
-
 function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
   const reduceMotion = useReducedMotion();
   const [selectedSphere, setSelectedSphere] = useState(spheres[0]);
   const [checkInOpen, setCheckInOpen] = useState(false);
@@ -88,7 +49,22 @@ function App() {
       <header className="site-header">
         <div className="shell site-header__inner">
           <BrandMark />
-          <nav aria-label="Navegación principal">
+          <button ref={menuButton} className="menu-toggle icon-button" type="button"
+              aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-expanded={menuOpen} aria-controls="primary-navigation"
+              onClick={() => setMenuOpen((value) => !value)}
+          >{menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}</button>
+          <nav id="primary-navigation" className={menuOpen ? "is-open" : ""} aria-label="Navegación principal"
+            onKeyDown={(event) => {
+              if (event.key === "Escape") { setMenuOpen(false); menuButton.current?.focus(); }
+            }}
+            onClick={(event) => {
+              if (event.target instanceof HTMLAnchorElement) {
+                setMenuOpen(false);
+                document.querySelector<HTMLElement>(event.target.hash)?.focus({ preventScroll: true });
+              }
+            }}
+          >
             <a href="#como-funciona">Cómo funciona</a>
             <a href="#instituciones">Para instituciones</a>
             <a href="#privacidad">Privacidad</a>
@@ -162,6 +138,7 @@ function App() {
                     <m.button
                       className={selectedSphere.key === sphere.key ? "is-selected" : ""}
                       key={sphere.key}
+                      aria-pressed={selectedSphere.key === sphere.key}
                       type="button"
                       onClick={() => selectSphere(sphere)}
                       whileTap={reduceMotion ? undefined : { scale: 0.98 }}
@@ -173,6 +150,7 @@ function App() {
                 <AnimatePresence mode="wait" initial={false}>
                   <m.div
                     className="message message--romi message--reply"
+                    role="status"
                     key={selectedSphere.key}
                     initial={reduceMotion ? false : { opacity: 0, y: 7 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -193,7 +171,7 @@ function App() {
           <a className="scroll-cue" href="#como-funciona">Descubre cómo te acompaña <ArrowDown aria-hidden="true" /></a>
         </section>
 
-        <section className="section section--paper" id="como-funciona">
+        <section className="section section--paper" id="como-funciona" tabIndex={-1}>
           <div className="shell">
             <div className="section-heading section-heading--split">
               <div>
@@ -254,37 +232,37 @@ function App() {
           </div>
         </section>
 
-        <section className="section institutional-section" id="instituciones">
+        <section className="section institutional-section" id="instituciones" tabIndex={-1}>
           <div className="shell institutional-section__grid">
             <div>
               <p className="eyebrow">Para escuelas e instituciones</p>
               <h2>Del primer mensaje a señales que sí ayudan a prevenir.</h2>
               <p className="section-lead">
-                B Lance conecta un acceso contextual mediante código QR, un flujo conversacional breve y señales agregadas para orientar intervenciones de salud mental sin exhibir historias individuales.
+                Esta demo permite explorar un check-in y una vista de indicadores ficticios. La propuesta institucional contempla las siguientes capacidades futuras; todavía no están conectadas a servicios ni a datos reales.
               </p>
               <ul className="feature-list">
-                <li><QrCode aria-hidden="true" /><span><strong>Entrada contextual</strong>Códigos QR por plantel, zona y nivel educativo.</span></li>
-                <li><MessageCircle aria-hidden="true" /><span><strong>Lenguaje que se adapta</strong>Mensajes cercanos según edad y contexto.</span></li>
-                <li><BarChart3 aria-hidden="true" /><span><strong>Inteligencia poblacional</strong>Indicadores por esfera, territorio y tendencia.</span></li>
-                <li><BookOpenCheck aria-hidden="true" /><span><strong>Continuidad clínica</strong>Resumen estructurado para evitar volver a contar todo.</span></li>
+                <li><QrCode aria-hidden="true" /><span><strong>Entrada contextual · prevista</strong>Códigos QR por plantel, zona y nivel educativo.</span></li>
+                <li><MessageCircle aria-hidden="true" /><span><strong>Lenguaje que se adapta · previsto</strong>Mensajes cercanos según edad y contexto.</span></li>
+                <li><BarChart3 aria-hidden="true" /><span><strong>Inteligencia poblacional · demostración</strong>Ejemplos ficticios por esfera y semana; sin mediciones reales.</span></li>
+                <li><BookOpenCheck aria-hidden="true" /><span><strong>Continuidad clínica · prevista</strong>Resumen estructurado para evitar volver a contar todo.</span></li>
               </ul>
             </div>
             <RealtimePreview />
           </div>
         </section>
 
-        <section className="section privacy-section" id="privacidad">
+        <section className="section privacy-section" id="privacidad" tabIndex={-1}>
           <div className="shell privacy-card">
             <div className="privacy-card__mark"><ShieldCheck aria-hidden="true" /></div>
             <div className="privacy-card__copy">
               <p className="eyebrow">Un límite que no se negocia</p>
               <h2>Lo que sientes no es una calificación.</h2>
-              <p>Los datos emocionales no deben utilizarse para castigar, disciplinar o perfilar a nadie, ni venderse. Las instituciones reciben tendencias agregadas, no conversaciones personales.</p>
+              <p>Los datos emocionales no deben utilizarse para castigar, disciplinar o perfilar a nadie, ni venderse. Esta demo no recopila respuestas ni entrega datos a instituciones. La propuesta futura contempla tendencias agregadas, no conversaciones personales.</p>
             </div>
             <div className="privacy-card__checks">
               <span><Check aria-hidden="true" /> Sin uso punitivo</span>
               <span><Check aria-hidden="true" /> Sin venta de datos</span>
-              <span><Check aria-hidden="true" /> IA siempre identificada</span>
+              <span><Check aria-hidden="true" /> Demo sin IA</span>
             </div>
           </div>
         </section>

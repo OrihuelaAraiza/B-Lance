@@ -1,0 +1,37 @@
+name: Demo quality and release
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run release
+      - run: sudo apt-get update && sudo apt-get install -y apache2
+      - run: python3 scripts/verify_apache.py --archive releases/*.tar.gz
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-results
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hostgator-release
+          path: releases/

@@ -1,14 +1,18 @@
 {
   "name": "b-lance-by-romi",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check": "pnpm run lint && pnpm run test && pnpm run build",
+    "test:e2e": "playwright test",
+    "verify:apache": "python3 scripts/verify_apache.py",
+    "release": "pnpm run check && node scripts/package-release.mjs"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.1.1",
@@ -20,7 +24,9 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^9.17.0",
+    "@playwright/test": "^1.63.0",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.3",
@@ -35,5 +41,9 @@
     "typescript-eslint": "^8.18.2",
     "vite": "^6.0.5",
     "vitest": "^2.1.8"
+  },
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": "24.x"
   }
 }

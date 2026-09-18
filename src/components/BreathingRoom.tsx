@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useBreathingClock } from "../hooks/useBreathingClock";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Pause, Play, RotateCcw, X } from "lucide-react";
 
@@ -16,28 +16,14 @@ function getBreathCue(elapsed: number) {
 }
 
 export function BreathingRoom({ open, onClose }: BreathingRoomProps) {
-  const [elapsed, setElapsed] = useState(0);
-  const [running, setRunning] = useState(false);
-  const finished = elapsed >= SESSION_SECONDS;
+  const { elapsedMs, running, finished, start, pause, reset } = useBreathingClock(open);
+  const elapsed = Math.floor(elapsedMs / 1000);
   const cue = getBreathCue(elapsed);
-
-  useEffect(() => {
-    if (!open || !running || finished) return;
-    const timer = window.setInterval(() => setElapsed((value) => value + 1), 1000);
-    return () => window.clearInterval(timer);
-  }, [finished, open, running]);
-
-  useEffect(() => {
-    if (!open) {
-      setElapsed(0);
-      setRunning(false);
-    }
-  }, [open]);
-
-  const reset = () => {
-    setElapsed(0);
-    setRunning(false);
-  };
+  const cycle = (elapsedMs % 10_000) / 1000;
+  const progress = cycle < 4 ? cycle / 4 : (10 - cycle) / 6;
+  const eased = (1 - Math.cos(Math.PI * progress)) / 2;
+  const announcement = finished ? "Pausa terminada. Nota cómo se siente tu cuerpo." : running
+    ? `${cue.label}. ${cue.detail}.` : elapsedMs > 0 ? "Pausa detenida. Puedes continuar cuando quieras." : "Pausa de 50 segundos lista para empezar.";
 
   return (
     <Dialog.Root open={open} onOpenChange={(nextOpen) => { if (!nextOpen) onClose(); }}>
@@ -55,19 +41,20 @@ export function BreathingRoom({ open, onClose }: BreathingRoomProps) {
           <p>No tienes que resolver nada mientras respiras.</p>
         </div>
 
-        <div className={`breath-orbit breath-orbit--${cue.phase}${running ? " is-running" : ""}`} aria-live="polite">
-          <div className="breath-orbit__halo" />
+        <div className={`breath-orbit breath-orbit--${cue.phase}${running ? " is-running" : ""}`} aria-hidden="true">
+          <div className="breath-orbit__halo" style={{ transform: `scale(${0.78 + eased * 0.22}) rotate(${-3 + eased * 5}deg)`, opacity: 0.55 + eased * 0.45 }} />
           <div className="breath-orbit__core">
-            <span>{finished ? "Listo" : running ? cue.label : "Tu pausa"}</span>
-            <strong>{finished ? "✓" : running ? cue.countdown : "50"}</strong>
-            <small>{finished ? "Nota cómo se siente tu cuerpo" : running ? cue.detail : "segundos"}</small>
+            <span>{finished ? "Listo" : running ? cue.label : elapsedMs > 0 ? "En pausa" : "Tu pausa"}</span>
+            <strong>{finished ? "✓" : elapsedMs > 0 || running ? cue.countdown : "50"}</strong>
+            <small>{finished ? "Nota cómo se siente tu cuerpo" : elapsedMs > 0 || running ? cue.detail : "segundos"}</small>
           </div>
         </div>
 
+        <p className="sr-only" role="status" aria-atomic="true">{announcement}</p>
         <div className="breathing-controls">
-          <button className="button button--ink" type="button" onClick={() => finished ? reset() : setRunning((value) => !value)}>
+          <button className="button button--ink" type="button" onClick={() => finished ? reset() : running ? pause() : start()}>
             {finished ? <RotateCcw aria-hidden="true" /> : running ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
-            {finished ? "Repetir la pausa" : running ? "Pausar" : "Empezar"}
+            {finished ? "Repetir la pausa" : running ? "Pausar" : elapsedMs > 0 ? "Continuar" : "Empezar"}
           </button>
           <span>{Math.min(elapsed, SESSION_SECONDS)} / {SESSION_SECONDS} s</span>
         </div>
