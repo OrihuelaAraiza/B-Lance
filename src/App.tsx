@@ -27,6 +27,7 @@ import { CheckIn } from "./components/CheckIn";
 import { HelpPanel } from "./components/HelpPanel";
 import { RealtimePreview } from "./components/RealtimePreview";
 import { useSoftSound } from "./hooks/useSoftSound";
+import { SoundPicker } from "./components/SoundPicker";
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -36,7 +37,7 @@ function App() {
   const [checkInOpen, setCheckInOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [breathingOpen, setBreathingOpen] = useState(false);
-  const { audioRef, enabled: soundEnabled, loading: soundLoading, error: soundError, toggle: toggleSound, play: playSound } = useSoftSound();
+  const { audioRef, enabled: soundEnabled, loading: soundLoading, error: soundError, selected: selectedSound, selectSound, toggle: toggleSound, play: playSound } = useSoftSound();
 
   const selectSphere = (sphere: typeof spheres[number]) => {
     playSound();
@@ -83,6 +84,7 @@ function App() {
               {soundEnabled ? <Volume2 aria-hidden="true" /> : <VolumeX aria-hidden="true" />}
               <span>{soundLoading ? "Cargando sonido…" : `Sonido ${soundEnabled ? "activado" : "desactivado"}`}</span>
             </button>
+            <SoundPicker selected={selectedSound} onSelect={(id) => void selectSound(id)} />
             {soundError && <p id="sound-error" className="sound-error" role="status">{soundError}</p>}
             <button className="button button--small button--paper" type="button" onClick={() => setHelpOpen(true)}>Ayuda ahora</button>
           </div>

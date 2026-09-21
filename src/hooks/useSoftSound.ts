@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { sounds, soundSource, type SoundId } from "../data/sounds";
 
 export function useSoftSound() {
   const [enabled, setEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selected, setSelected] = useState<SoundId>(sounds[0].id);
   const audioRef = useRef<HTMLAudioElement>(null);
   const requested = useRef(false);
   const attempt = useRef(0);
@@ -11,8 +13,9 @@ export function useSoftSound() {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    const onPause = () => setEnabled(false);
+    const onPause = () => { if (audio.paused) setEnabled(false); };
     const onError = () => {
+      if (!audio.error) return;
       requested.current = false;
       attempt.current += 1;
       setEnabled(false);
@@ -42,18 +45,9 @@ export function useSoftSound() {
     };
   }, []);
 
-  const toggle = async () => {
-    const audio = audioRef.current;
-    if (!audio) return;
+  const start = async (audio: HTMLAudioElement) => {
     const currentAttempt = ++attempt.current;
     setError("");
-    if (requested.current && (!audio.paused || loading)) {
-      requested.current = false;
-      audio.pause();
-      setEnabled(false);
-      setLoading(false);
-      return;
-    }
     requested.current = true;
     setLoading(true);
     try {
@@ -70,6 +64,37 @@ export function useSoftSound() {
     } finally {
       if (attempt.current === currentAttempt) setLoading(false);
     }
+  };
+
+  const toggle = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (requested.current && (!audio.paused || loading)) {
+      attempt.current += 1;
+      requested.current = false;
+      audio.pause();
+      setEnabled(false);
+      setLoading(false);
+      setError("");
+      return;
+    }
+    return start(audio);
+  };
+
+  const selectSound = (id: SoundId) => {
+    const audio = audioRef.current;
+    if (!audio || id === selected) return;
+    const shouldPlay = requested.current;
+    attempt.current += 1;
+    audio.pause();
+    setEnabled(false);
+    setLoading(false);
+    setError("");
+    setSelected(id);
+    // Change the single player synchronously so play retains the user gesture
+    // on mobile browsers, and obsolete play promises cannot update the UI.
+    audio.src = soundSource(id);
+    if (shouldPlay) return start(audio);
   };
 
   const play = useCallback(() => {
@@ -97,5 +122,5 @@ export function useSoftSound() {
     void context.resume().catch(() => context.close());
   }, [enabled]);
 
-  return { audioRef, enabled, loading, error, toggle, play };
+  return { audioRef, enabled, loading, error, selected, selectSound, toggle, play };
 }
