@@ -36,7 +36,7 @@ function App() {
   const [checkInOpen, setCheckInOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [breathingOpen, setBreathingOpen] = useState(false);
-  const { enabled: soundEnabled, setEnabled: setSoundEnabled, play: playSound } = useSoftSound();
+  const { audioRef, enabled: soundEnabled, loading: soundLoading, error: soundError, toggle: toggleSound, play: playSound } = useSoftSound();
 
   const selectSphere = (sphere: typeof spheres[number]) => {
     playSound();
@@ -45,6 +45,7 @@ function App() {
 
   return (
     <>
+      <audio ref={audioRef} src="/audio/ambiente-suave.mp3" preload="none" loop />
       <a className="skip-link" href="#contenido">Saltar al contenido</a>
       <header className="site-header">
         <div className="shell site-header__inner">
@@ -74,12 +75,15 @@ function App() {
               className="sound-toggle"
               type="button"
               aria-pressed={soundEnabled}
-              aria-label={`Sonido ${soundEnabled ? "activado" : "desactivado"}`}
-              onClick={() => setSoundEnabled((value) => !value)}
+              aria-label={soundLoading ? "Cargando sonido" : `Sonido ${soundEnabled ? "activado" : "desactivado"}`}
+              aria-busy={soundLoading}
+              aria-describedby={soundError ? "sound-error" : undefined}
+              onClick={() => void toggleSound()}
             >
               {soundEnabled ? <Volume2 aria-hidden="true" /> : <VolumeX aria-hidden="true" />}
-              <span>Sonido {soundEnabled ? "activado" : "desactivado"}</span>
+              <span>{soundLoading ? "Cargando sonido…" : `Sonido ${soundEnabled ? "activado" : "desactivado"}`}</span>
             </button>
+            {soundError && <p id="sound-error" className="sound-error" role="status">{soundError}</p>}
             <button className="button button--small button--paper" type="button" onClick={() => setHelpOpen(true)}>Ayuda ahora</button>
           </div>
         </div>
