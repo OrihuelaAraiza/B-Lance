@@ -32,11 +32,11 @@ test("layout, keyboard navigation, selected states and accessible data", async (
   if (page.viewportSize()!.width <= 1020) {
     const menu = page.getByRole("button", { name: "Abrir menú" });
     await menu.focus(); await page.keyboard.press("Enter"); await page.keyboard.press("Tab");
-    await expect(page.getByRole("link", { name: "Cómo funciona", exact: true })).toBeFocused();
+    await expect(page.getByRole("link", { name: "Para jóvenes", exact: true })).toBeFocused();
     await page.keyboard.press("Escape"); await expect(page.getByRole("button", { name: "Abrir menú" })).toBeFocused();
     await page.getByRole("button", { name: "Abrir menú" }).click();
   }
-  await page.getByRole("link", { name: "Para instituciones", exact: true }).click();
+  await page.getByRole("link", { name: "Para profesionales", exact: true }).click();
   await expect(page.locator("#instituciones")).toBeFocused();
   await page.getByRole("button", { name: "Tendencia", exact: true }).click();
   await expect(page.getByRole("button", { name: "Tendencia", exact: true })).toHaveAttribute("aria-pressed", "true");
@@ -79,7 +79,7 @@ test("check-in routes, modal transitions and no transmitted or persisted respons
     await dialog.getByRole("button", { name: high ? /Por completo/ : /^Poco/ }).click();
     await dialog.getByRole("button", { name: "Me ha pasado, pero no ahora" }).click();
     await dialog.getByRole("button", { name: "Sí, sé con quién" }).click();
-    await expect(dialog.getByRole("heading")).toHaveText(high ? "Esto merece apoyo humano hoy." : "No tienes que resolverlo todo hoy.");
+    await expect(dialog.getByRole("heading")).toHaveText("Esto merece apoyo humano hoy.");
     await expect(dialog.getByRole("button", { name: "Ver opciones de apoyo" })).toBeVisible();
     await dialog.getByRole("button", { name: "Hacer una pausa guiada" }).click();
     await expect(page.getByRole("dialog", { name: "Solo sigue el ritmo." })).toBeVisible();

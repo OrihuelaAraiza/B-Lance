@@ -1,0 +1,790 @@
+{
+  "app": {
+    "id": "b_lance_whatsapp",
+    "name": "B-LANCE",
+    "version": "prototype_0.1",
+    "language": "es-MX",
+    "channel": "whatsapp",
+    "purpose": "Tamizaje conversacional de estrés académico mediante SISCO SV-21",
+    "diagnostic_use": false
+  },
+
+  "session": {
+    "session_id": null,
+    "participant_id": null,
+    "started_at": null,
+    "completed_at": null,
+    "current_state": "welcome",
+    "sisco_completed": false,
+    "triage_completed": false
+  },
+
+  "participant": {
+    "age": null,
+    "sex": null,
+    "education_level": null,
+    "campus": null
+  },
+
+  "conversation_rules": {
+    "one_question_at_a_time": true,
+    "show_item_numbers": false,
+    "show_dimension_names": false,
+    "show_instrument_name_to_user": false,
+    "allow_free_text": true,
+    "allow_exit": true,
+    "allow_pause": true,
+    "tone": "cercano_neutral_no_judgmental",
+    "do_not_diagnose": true,
+    "do_not_interpret_during_questionnaire": true,
+    "do_not_praise_or_judge_answers": true,
+    "neutral_acknowledgements": [
+      "Entiendo.",
+      "Gracias por responder.",
+      "Vamos con otra.",
+      "Perfecto, seguimos."
+    ]
+  },
+
+  "response_scales": {
+    "frequency": [
+      {
+        "value": 0,
+        "code": "N",
+        "label": "Nunca"
+      },
+      {
+        "value": 1,
+        "code": "CN",
+        "label": "Casi nunca"
+      },
+      {
+        "value": 2,
+        "code": "RV",
+        "label": "Raras veces"
+      },
+      {
+        "value": 3,
+        "code": "AV",
+        "label": "Algunas veces"
+      },
+      {
+        "value": 4,
+        "code": "CS",
+        "label": "Casi siempre"
+      },
+      {
+        "value": 5,
+        "code": "S",
+        "label": "Siempre"
+      }
+    ],
+
+    "stress_intensity": [
+      {
+        "value": 1,
+        "label": "1 · Poco"
+      },
+      {
+        "value": 2,
+        "label": "2"
+      },
+      {
+        "value": 3,
+        "label": "3"
+      },
+      {
+        "value": 4,
+        "label": "4"
+      },
+      {
+        "value": 5,
+        "label": "5 · Mucho"
+      }
+    ]
+  },
+
+  "safety_engine": {
+    "enabled": true,
+    "run_on_every_user_message": true,
+    "priority_over_questionnaire": true,
+
+    "signals": {
+      "possible_self_harm": false,
+      "possible_suicidal_ideation": false,
+      "possible_immediate_danger": false,
+      "severe_distress": false,
+      "requests_immediate_help": false
+    },
+
+    "instruction": "Analiza el significado completo del mensaje y no solamente palabras aisladas. Si existe una señal razonable de autolesión, ideación suicida, peligro inmediato o solicitud urgente de ayuda, suspende temporalmente el cuestionario y pasa a safety_check.",
+
+    "on_positive_signal": {
+      "next_state": "safety_check",
+      "suspend_sisco": true
+    }
+  },
+
+  "states": {
+    "welcome": {
+      "type": "message",
+      "message": "Hola. Soy B-LANCE. Este espacio busca ayudarte a identificar cómo te has sentido con la escuela y orientarte si necesitas apoyo. Primero quiero conocerte un poco.",
+      "next_state": "ask_age"
+    },
+
+    "ask_age": {
+      "type": "number",
+      "message": "¿Cuántos años tienes?",
+      "save_to": "participant.age",
+      "validation": {
+        "min": 12,
+        "max": 29
+      },
+      "invalid_message": "Escribe tu edad usando solamente el número.",
+      "next_state": "ask_sex"
+    },
+
+    "ask_sex": {
+      "type": "single_choice",
+      "message": "Para fines del registro, ¿cuál es tu sexo?",
+      "options": [
+        {
+          "value": "female",
+          "label": "Mujer"
+        },
+        {
+          "value": "male",
+          "label": "Hombre"
+        },
+        {
+          "value": "other",
+          "label": "Otro"
+        },
+        {
+          "value": "prefer_not_answer",
+          "label": "Prefiero no responder"
+        }
+      ],
+      "save_to": "participant.sex",
+      "next_state": "ask_education"
+    },
+
+    "ask_education": {
+      "type": "single_choice",
+      "message": "¿Qué nivel estás cursando actualmente?",
+      "options": [
+        {
+          "value": "secondary",
+          "label": "Secundaria"
+        },
+        {
+          "value": "high_school",
+          "label": "Bachillerato"
+        },
+        {
+          "value": "university",
+          "label": "Universidad"
+        },
+        {
+          "value": "other",
+          "label": "Otro"
+        }
+      ],
+      "save_to": "participant.education_level",
+      "next_state": "ask_campus"
+    },
+
+    "ask_campus": {
+      "type": "catalog_choice",
+      "message": "¿En qué plantel estudias?",
+      "catalog": "campuses",
+      "save_to": "participant.campus",
+      "next_state": "conversation_entry"
+    },
+
+    "conversation_entry": {
+      "type": "free_text",
+      "message": "Antes de hacerte unas preguntas breves: ¿cómo se te ha hecho este semestre?",
+      "save_to": "conversation.semester_opening",
+      "analyze_for": [
+        "stress",
+        "school_pressure",
+        "anxiety",
+        "sadness",
+        "fatigue",
+        "irritability",
+        "concentration",
+        "hopelessness",
+        "safety"
+      ],
+      "next_state": "sisco_filter"
+    },
+
+    "sisco_filter": {
+      "type": "single_choice",
+      "instrument_item": "filter",
+      "message": "Pensando en este semestre, ¿has tenido momentos de preocupación o nerviosismo relacionados con estrés?",
+      "options": [
+        {
+          "value": true,
+          "label": "Sí"
+        },
+        {
+          "value": false,
+          "label": "No"
+        }
+      ],
+      "save_to": "sisco.filter",
+      "branches": {
+        "true": "stress_intensity",
+        "false": "sisco_filter_negative"
+      }
+    },
+
+    "sisco_filter_negative": {
+      "type": "message",
+      "message": "Gracias. Con esto terminamos esta parte. Si quieres, podemos seguir hablando de cómo te ha ido o de algo que te esté preocupando.",
+      "set": {
+        "session.sisco_completed": true,
+        "sisco.status": "terminated_by_filter"
+      },
+      "next_state": "post_sisco_support"
+    },
+
+    "stress_intensity": {
+      "type": "scale",
+      "instrument_item": "intensity",
+      "message": "Para ubicarlo mejor: en una escala del 1 al 5, donde 1 es poco y 5 es mucho, ¿qué número describe mejor el nivel de estrés que has sentido?",
+      "scale_ref": "stress_intensity",
+      "save_to": "sisco.stress_intensity",
+      "next_state": "stressors_intro"
+    },
+
+    "stressors_intro": {
+      "type": "message",
+      "message": "Quiero entender qué cosas de la escuela te están pesando más. Te mencionaré algunas situaciones y tú dime con qué frecuencia llegan a estresarte.",
+      "next_state": "E1"
+    },
+
+    "E1": {
+      "type": "frequency_item",
+      "dimension": "stressors",
+      "message": "¿Con qué frecuencia te estresa la sobrecarga de tareas y trabajos escolares que tienes que realizar todos los días?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.E1",
+      "next_state": "E2"
+    },
+
+    "E2": {
+      "type": "frequency_item",
+      "dimension": "stressors",
+      "message": "¿Con qué frecuencia te estresa la personalidad y el carácter de los profesores que te imparten clases?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.E2",
+      "next_state": "E3"
+    },
+
+    "E3": {
+      "type": "frequency_item",
+      "dimension": "stressors",
+      "message": "¿Con qué frecuencia te estresa la forma en que tus profesores te evalúan, por ejemplo mediante ensayos, trabajos de investigación o búsquedas en Internet?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.E3",
+      "next_state": "E4"
+    },
+
+    "E4": {
+      "type": "frequency_item",
+      "dimension": "stressors",
+      "message": "¿Con qué frecuencia te estresa el nivel de exigencia de tus profesores?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.E4",
+      "next_state": "E5"
+    },
+
+    "E5": {
+      "type": "frequency_item",
+      "dimension": "stressors",
+      "message": "¿Con qué frecuencia te estresa el tipo de trabajo que te piden tus profesores, como consultas, ensayos, fichas de trabajo o mapas conceptuales?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.E5",
+      "next_state": "E6"
+    },
+
+    "E6": {
+      "type": "frequency_item",
+      "dimension": "stressors",
+      "message": "¿Con qué frecuencia te estresa tener tiempo limitado para hacer el trabajo que te encargan tus profesores?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.E6",
+      "next_state": "E7"
+    },
+
+    "E7": {
+      "type": "frequency_item",
+      "dimension": "stressors",
+      "message": "¿Con qué frecuencia te estresa tener poca claridad sobre lo que tus profesores esperan de ti?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.E7",
+      "next_state": "symptoms_intro"
+    },
+
+    "symptoms_intro": {
+      "type": "message",
+      "message": "Ya vimos algunas situaciones de la escuela. Ahora piensa en qué notas en ti cuando estás bajo estrés.",
+      "next_state": "S1"
+    },
+
+    "S1": {
+      "type": "frequency_item",
+      "dimension": "symptoms",
+      "message": "Cuando estás estresado/a, ¿con qué frecuencia sientes fatiga o cansancio permanente?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.S1",
+      "next_state": "S2"
+    },
+
+    "S2": {
+      "type": "frequency_item",
+      "dimension": "symptoms",
+      "message": "Cuando estás estresado/a, ¿con qué frecuencia aparecen sentimientos de tristeza o decaimiento?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.S2",
+      "next_state": "S3"
+    },
+
+    "S3": {
+      "type": "frequency_item",
+      "dimension": "symptoms",
+      "message": "Cuando estás estresado/a, ¿con qué frecuencia sientes ansiedad, angustia o desesperación?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.S3",
+      "next_state": "S4"
+    },
+
+    "S4": {
+      "type": "frequency_item",
+      "dimension": "symptoms",
+      "message": "Cuando estás estresado/a, ¿con qué frecuencia tienes problemas para concentrarte?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.S4",
+      "next_state": "S5"
+    },
+
+    "S5": {
+      "type": "frequency_item",
+      "dimension": "symptoms",
+      "message": "Cuando estás estresado/a, ¿con qué frecuencia notas que aumenta tu irritabilidad o agresividad?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.S5",
+      "next_state": "S6"
+    },
+
+    "S6": {
+      "type": "frequency_item",
+      "dimension": "symptoms",
+      "message": "Cuando estás estresado/a, ¿con qué frecuencia tiendes a discutir o entrar en conflictos?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.S6",
+      "next_state": "S7"
+    },
+
+    "S7": {
+      "type": "frequency_item",
+      "dimension": "symptoms",
+      "message": "Cuando estás estresado/a, ¿con qué frecuencia sientes desgano para realizar tus actividades escolares?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.S7",
+      "next_state": "coping_intro"
+    },
+
+    "coping_intro": {
+      "type": "message",
+      "message": "Nos falta una última parte. Ahora quiero saber qué haces normalmente cuando algo te preocupa o te genera estrés.",
+      "next_state": "A1"
+    },
+
+    "A1": {
+      "type": "frequency_item",
+      "dimension": "coping",
+      "message": "¿Con qué frecuencia te concentras en resolver la situación que te preocupa?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.A1",
+      "next_state": "A2"
+    },
+
+    "A2": {
+      "type": "frequency_item",
+      "dimension": "coping",
+      "message": "¿Con qué frecuencia estableces soluciones concretas para resolver la situación que te preocupa?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.A2",
+      "next_state": "A3"
+    },
+
+    "A3": {
+      "type": "frequency_item",
+      "dimension": "coping",
+      "message": "¿Con qué frecuencia analizas lo positivo y lo negativo de las soluciones que has pensado?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.A3",
+      "next_state": "A4"
+    },
+
+    "A4": {
+      "type": "frequency_item",
+      "dimension": "coping",
+      "message": "¿Con qué frecuencia intentas mantener el control sobre tus emociones para que no te afecte lo que te estresa?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.A4",
+      "next_state": "A5"
+    },
+
+    "A5": {
+      "type": "frequency_item",
+      "dimension": "coping",
+      "message": "¿Con qué frecuencia recuerdas situaciones parecidas que hayas vivido y piensas en cómo las resolviste?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.A5",
+      "next_state": "A6"
+    },
+
+    "A6": {
+      "type": "frequency_item",
+      "dimension": "coping",
+      "message": "¿Con qué frecuencia haces un plan para enfrentar lo que te estresa y llevas a cabo sus pasos?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.A6",
+      "next_state": "A7"
+    },
+
+    "A7": {
+      "type": "frequency_item",
+      "dimension": "coping",
+      "message": "¿Con qué frecuencia intentas encontrar algo positivo en la situación que te preocupa?",
+      "scale_ref": "frequency",
+      "save_to": "sisco.responses.A7",
+      "next_state": "calculate_sisco"
+    },
+
+    "calculate_sisco": {
+      "type": "internal_action",
+      "visible_to_user": false,
+      "actions": [
+        "validate_sisco_completion",
+        "calculate_stressors_mean",
+        "calculate_symptoms_mean",
+        "calculate_coping_mean",
+        "calculate_global_mean",
+        "calculate_global_percentage"
+      ],
+      "set": {
+        "session.sisco_completed": true
+      },
+      "next_state": "triage_engine"
+    },
+
+    "triage_engine": {
+      "type": "internal_action",
+      "visible_to_user": false,
+
+      "rules": [
+        {
+          "priority": 1,
+          "if": "safety.possible_immediate_danger == true OR safety.possible_suicidal_ideation == true OR safety.possible_self_harm == true",
+          "triage": "red",
+          "next_state": "red_response"
+        },
+        {
+          "priority": 2,
+          "if": "clinical_referral_rule == true",
+          "triage": "yellow",
+          "next_state": "yellow_response"
+        },
+        {
+          "priority": 3,
+          "if": "no_red_or_yellow_rule == true",
+          "triage": "green",
+          "next_state": "green_response"
+        }
+      ],
+
+      "note": "Los criterios numéricos que convertirán el resultado SISCO en una recomendación de referencia deben definirse y validarse en el protocolo clínico antes del uso real."
+    },
+
+    "green_response": {
+      "type": "message",
+      "message": "Gracias por terminar. Tus respuestas nos ayudan a entender qué situaciones escolares te generan estrés y qué haces para manejarlo. Podemos revisar algunas estrategias prácticas que podrían ayudarte.",
+      "set": {
+        "triage.level": "green",
+        "session.triage_completed": true
+      },
+      "next_state": "green_menu"
+    },
+
+    "green_menu": {
+      "type": "single_choice",
+      "message": "¿Qué te gustaría trabajar primero?",
+      "options": [
+        {
+          "value": "school_pressure",
+          "label": "Presión escolar"
+        },
+        {
+          "value": "organization",
+          "label": "Organización"
+        },
+        {
+          "value": "emotions",
+          "label": "Manejo de emociones"
+        },
+        {
+          "value": "talk",
+          "label": "Solo quiero hablar"
+        }
+      ],
+      "next_state": "self_help_module"
+    },
+
+    "yellow_response": {
+      "type": "message",
+      "message": "Gracias por responder. Por lo que identificamos, podría ser útil que además de seguir hablando aquí, tengas la opción de conversar con un profesional de psicología.",
+      "set": {
+        "triage.level": "yellow",
+        "session.triage_completed": true
+      },
+      "next_state": "psychology_referral"
+    },
+
+    "psychology_referral": {
+      "type": "single_choice",
+      "message": "¿Te gustaría conocer las opciones disponibles para recibir apoyo psicológico?",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Sí"
+        },
+        {
+          "value": "not_now",
+          "label": "Ahora no"
+        }
+      ],
+      "next_state": "post_sisco_support"
+    },
+
+    "safety_check": {
+      "type": "safety_intervention",
+      "message": "Quiero asegurarme de entenderte bien. ¿En este momento estás pensando en hacerte daño o sientes que estás en peligro?",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Sí"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "unsure",
+          "label": "No estoy seguro/a"
+        }
+      ],
+      "branches": {
+        "yes": "red_response",
+        "unsure": "red_response",
+        "no": "safety_followup"
+      }
+    },
+
+    "safety_followup": {
+      "type": "safety_intervention",
+      "message": "Gracias por decírmelo. Aunque no estés en peligro inmediato, quiero saber si necesitas apoyo de una persona en este momento.",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Sí"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "branches": {
+        "yes": "yellow_response",
+        "no": "resume_previous_state"
+      }
+    },
+
+    "red_response": {
+      "type": "safety_intervention",
+      "message": "Lo más importante ahora es tu seguridad. Vamos a dejar las preguntas de la escuela por el momento y buscar apoyo humano inmediato. B-LANCE no sustituye la atención de emergencia.",
+      "set": {
+        "triage.level": "red",
+        "session.triage_completed": true,
+        "safety.protocol_activated": true
+      },
+      "next_state": "crisis_resources"
+    },
+
+    "crisis_resources": {
+      "type": "safety_action",
+      "actions": [
+        "show_configured_crisis_resources",
+        "offer_contact_trusted_person",
+        "offer_human_support",
+        "keep_conversation_available"
+      ],
+      "resource_configuration": {
+        "national_resource": "CONFIGURE_LINEA_DE_LA_VIDA",
+        "emergency_service": "CONFIGURE_LOCAL_EMERGENCY_NUMBER",
+        "institutional_contact": "CONFIGURE_CAMPUS_CRISIS_CONTACT"
+      }
+    },
+
+    "post_sisco_support": {
+      "type": "single_choice",
+      "message": "¿Qué prefieres hacer ahora?",
+      "options": [
+        {
+          "value": "talk",
+          "label": "Seguir hablando"
+        },
+        {
+          "value": "resources",
+          "label": "Ver recursos"
+        },
+        {
+          "value": "finish",
+          "label": "Terminar"
+        }
+      ]
+    },
+
+    "self_help_module": {
+      "type": "ai_guided_support",
+      "allowed_functions": [
+        "psychoeducation",
+        "emotional_validation",
+        "basic_coping_strategies",
+        "problem_solving",
+        "study_organization",
+        "encourage_social_support"
+      ],
+      "prohibited_functions": [
+        "diagnosis",
+        "medication_recommendation",
+        "replace_psychologist",
+        "promise_confidentiality_without_limits",
+        "ignore_safety_signals"
+      ]
+    }
+  },
+
+  "sisco": {
+    "instrument": "SISCO SV-21",
+    "status": null,
+    "filter": null,
+    "stress_intensity": null,
+
+    "responses": {
+      "E1": null,
+      "E2": null,
+      "E3": null,
+      "E4": null,
+      "E5": null,
+      "E6": null,
+      "E7": null,
+
+      "S1": null,
+      "S2": null,
+      "S3": null,
+      "S4": null,
+      "S5": null,
+      "S6": null,
+      "S7": null,
+
+      "A1": null,
+      "A2": null,
+      "A3": null,
+      "A4": null,
+      "A5": null,
+      "A6": null,
+      "A7": null
+    },
+
+    "scores": {
+      "stressors_mean": null,
+      "symptoms_mean": null,
+      "coping_mean": null,
+      "global_mean": null,
+      "global_percentage": null,
+      "valid_response_percentage": null
+    }
+  },
+
+  "conversation": {
+    "semester_opening": null,
+    "detected_topics": [],
+    "free_text_messages": []
+  },
+
+  "safety": {
+    "possible_self_harm": false,
+    "possible_suicidal_ideation": false,
+    "possible_immediate_danger": false,
+    "severe_distress": false,
+    "requests_immediate_help": false,
+    "protocol_activated": false
+  },
+
+  "triage": {
+    "level": null,
+    "reason_codes": [],
+    "generated_by": "rule_engine",
+    "not_generated_by_llm_alone": true
+  },
+
+  "analytics": {
+    "store_raw_conversation": false,
+    "store_structured_variables": true,
+
+    "variables": [
+      "age",
+      "sex",
+      "education_level",
+      "campus",
+      "sisco_filter",
+      "stress_intensity",
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "E5",
+      "E6",
+      "E7",
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5",
+      "S6",
+      "S7",
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "stressors_mean",
+      "symptoms_mean",
+      "coping_mean",
+      "global_mean",
+      "global_percentage",
+      "triage_level",
+      "screening_completed",
+      "psychology_referral_offered",
+      "psychology_referral_accepted"
+    ]
+  }
+}

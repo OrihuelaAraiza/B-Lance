@@ -8,7 +8,7 @@ export function NotFoundPage() {
 
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = "Página no encontrada | B Lance by ROMI";
+    document.title = "Página no encontrada | B-lance";
     return () => { document.title = previousTitle; };
   }, []);
 

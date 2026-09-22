@@ -1,34 +1,29 @@
-# Verificación local — demo 0.2.0
+# Verificación local — feedback del 22 de septiembre de 2026
 
-Fecha: 18 de septiembre de 2026.
+Validación ejecutada sobre la integración del logo oficial, Nabi, contenido para jóvenes/profesionales, Zona segura, enlace a WhatsApp y recorrido académico. Demo 0.2.0 con feedback de septiembre; cambios locales, sin publicación en esta entrega.
 
-## Resultado
-
-| Comprobación | Evidencia |
+| Comprobación | Evidencia ejecutada |
 | --- | --- |
-| Instalación reproducible | `pnpm install --frozen-lockfile` correcto con pnpm 11.19.0 |
-| Calidad y paquete | `pnpm run release`: lint, 17 pruebas y build correctos |
-| Reglas | 8 pruebas, incluidos límites 6/7, caso `sometimes` y 300 combinaciones que deben ser urgentes |
-| Check-in | 7 pruebas de componente: consentimiento, foco, retroceso, ayuda, cierre/reapertura y tres rutas |
-| Respiración | 2 pruebas de componente: reloj compartido, fracciones de segundo, pausa, cambio de visibilidad, fin a 50 s y reinicio |
-| Navegador | 20 escenarios correctos en Chromium a 320, 390, 768 y 1440 px |
-| Ajuste visual final | Tras ampliar el espacio del encabezado a 320 px, se repitieron los 4 escenarios de diseño/teclado: correctos |
-| Accesibilidad automatizada | Axe sin infracciones de las reglas WCAG A/AA seleccionadas en página, check-in, ayuda y respiración |
-| Privacidad del recorrido | Sin solicitudes después de la carga inicial, sin cookies, sin local/sessionStorage ni escrituras detectadas a IndexedDB durante los flujos probados |
-| Apache real | Apache 2.4.67: inicio 200, recursos correctos, 404 real, caché, cabeceras, `.htaccess` protegido y ausencia de sourcemaps |
-| Integridad del paquete | SHA-256 del comprimido y checksums de los 16 archivos verificados; ensayo Apache del paquete extraído correcto |
-| Revisión del diff | `git diff --check` correcto; sin cambios en `src/lib/screening.ts` |
+| Calidad | `pnpm run check`: ESLint, TypeScript, 24 pruebas y build Vite correctos. |
+| Check-in breve | 8 pruebas de rutas y 7 de componente. Se elimina el corte inventado de 7; preocupaciones pasadas por seguridad siempre ofrecen apoyo humano. |
+| Recorrido académico | 7 pruebas de aritmética/validez: medias separadas, respuestas faltantes, valores inválidos y ausencia de clasificación clínica. |
+| Respiración | 2 pruebas de componente, más los recorridos de navegador existentes. |
+| Navegador final | `pnpm run test:e2e`: **48 escenarios correctos** en Chromium a 320, 390, 768 y 1440 px; ejecución final en 1.6 minutos. |
+| Recorrido completo | Consentimiento, omisión, filtro negativo, intensidad, 21 respuestas, retroceso, pausa, resumen, cierre, borrado y recuperación de foco. |
+| Contexto ficticio | Comprobación adicional en Chromium a 390 px: edad 11 rechazada, edad 18 válida, selección de sexo/nivel/plantel de demo, reflexión opcional y cierre. |
+| WhatsApp | Enlaces al número `525667769449`, saludo genérico y atributos seguros. Apertura comprobada interceptando el destino externo; no se contactó al número ni se enviaron mensajes. |
+| Ayuda | Enlaces `tel:911` y `tel:8009112000`, acceso directo desde Zona segura y desde los cuestionarios. No se hicieron llamadas. |
+| Privacidad | Durante los recorridos probados no se emiten solicitudes tras la carga, no hay cookies ni almacenamiento local/de sesión, ni escrituras detectadas en IndexedDB. La apertura externa de WhatsApp es independiente. |
+| Accesibilidad | Axe sin infracciones de las reglas WCAG A/AA seleccionadas en las secciones y diálogos probados; teclado, foco y movimiento reducido. |
+| Audio | Seis ambientes locales: reproducción, bucle, pausa, selección, cancelación de carga y recuperación tras error. |
+| Diseño | Inspección visual de portada, pedir apoyo, página completa, zona segura y resumen. Sin desbordamiento horizontal en los cuatro tamaños. |
+| Apache | `pnpm run verify:apache`: PASS; inicio 200, 8 assets de build, caché, cabeceras, 404 real, `.htaccess` protegido y ausencia de sourcemaps. |
+| Diff | `git diff --check` correcto. |
 
-El estado de Git se pudo consultar mediante `/Library/Developer/CommandLineTools/usr/bin/git`, sin aceptar ni modificar la licencia de Xcode.
+Se corrigieron durante la verificación el contraste de dos textos pequeños, la carga de una fuente incrustada incompatible con CSP y el ancho intrínseco de una tabla accesible en móvil. Todas las secciones quedan disponibles al navegador y a las herramientas de accesibilidad sin depender de su entrada en pantalla.
 
-## Artefacto final
-
-`releases/b-lance-0.2.0-46ae53fa901e.tar.gz`
-
-SHA-256: `770bfa37ff984eb6d00411dd42224b9f060cbce3ae4e6a5d705c2ca8c6e0d114`
-
-El manifiesto `.json` y el archivo `.sha256` están en el mismo directorio. Estos artefactos generados están excluidos de Git. Las instrucciones de publicación y recuperación están en [HOSTGATOR.md](HOSTGATOR.md).
+Las capturas locales están en `releases/feedback-2026-09-22/` (directorio excluido de Git); el reporte de navegador se genera en `playwright-report/`. El paquete HostGator del 18 de septiembre es anterior a este feedback y no contiene estos cambios. Para generar uno nuevo se mantiene `pnpm run release`.
 
 ## Límites
 
-No se ha desplegado, hecho push ni ejecutado el workflow remoto de GitHub Actions. HTTPS y configuración de la cuenta HostGator siguen pendientes de comprobación en el dominio real. No se ejecutaron pruebas en dispositivos físicos, Safari, Firefox o lectores de pantalla reales. Axe no demuestra conformidad completa con WCAG. Los resultados son evidencia técnica de una demo; no son una validación clínica ni autorización para procesar datos reales. Ver [DEMO-READINESS.md](DEMO-READINESS.md).
+Esta entrega no incluye commit/push, despliegue público ni verificación de recepción/atención por WhatsApp. El enlace web no configura un bot, una cuenta empresarial, un webhook ni un sistema clínico. No se ejecutaron pruebas en dispositivos físicos, Safari, Firefox o lectores de pantalla reales. Axe no demuestra conformidad completa con WCAG. Las reglas `clinical_referral_rule` y `yellow_cutoffs` permanecen sin definir; no hay validación clínica ni operación con datos reales. Ver [FEEDBACK-2026-09-22.md](FEEDBACK-2026-09-22.md) y [DEMO-READINESS.md](DEMO-READINESS.md).

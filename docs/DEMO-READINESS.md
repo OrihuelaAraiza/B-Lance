@@ -1,38 +1,30 @@
 # Demo institucional: alcance y revisión pendiente
 
-Esta versión refina la demo existente y conserva la identidad ROMI. No incorpora backend, cuentas, base de datos, IA, analítica ni conexión institucional. Las respuestas viven únicamente en memoria; cerrar el check-in elimina su estado. No hay un registro de consentimiento: la casilla solo confirma que se entendió el carácter demostrativo.
+Actualizado con el feedback del 22 de septiembre de 2026. La demo incorpora el logo oficial, Nabi, Manrope, secciones para jóvenes y profesionales, y Zona segura. La estructura continúa siendo una página con anclas. No incorpora backend, cuentas, base de datos, IA, analítica real ni conexión institucional.
 
 ## Qué se puede demostrar
 
-- Elección de temas con respuestas prefijadas; la selección no personaliza el algoritmo del check-in.
-- Check-in con cinco preguntas, retroceso, cierre, repetición y rutas deterministas existentes.
-- Opciones de ayuda accesibles en cada pregunta y en todos los resultados.
-- Pausa de 50 segundos, inhalación de 4 y exhalación de 6, pausa/continuación y detención al ocultar la pestaña. Volver a la pestaña no reinicia la respiración automáticamente.
-- Gráficos con cantidades de selecciones ficticias por esfera y por semana, sin significado clínico. Ambas vistas son fixtures independientes; no representan una misma cohorte ni porcentajes.
-- Menú móvil con los enlaces existentes y ayuda en el encabezado, sin botones flotantes que cubran contenido.
+- Elección de temas con respuestas prefijadas. La selección no realiza análisis semántico.
+- Check-in breve con consentimiento demostrativo, preguntas de seguridad, intensidad, impacto y red de apoyo.
+- Recorrido académico basado en la propuesta Euler/SISCO SV-21: perfil ficticio opcional, reflexión ficticia opcional, seguridad explícita, aceptación, filtro, intensidad y 21 reactivos. Pausa, retroceso, omisión y salida.
+- Promedios descriptivos separados solo cuando existen 21 respuestas válidas. No se genera clasificación clínica.
+- Ayuda durante los recorridos; 911 y Línea de la Vida visibles también en Zona segura.
+- Enlace a WhatsApp de B-lance con saludo genérico. No envía mensajes automáticamente ni adjunta respuestas.
+- Pausa guiada de 50 segundos; audio opcional con seis ambientes locales.
+- Gráficos institucionales ficticios por esfera/semana, independientes de las respuestas del usuario y entre sí.
 
-QR por plantel, adaptación por edad, resúmenes clínicos e indicadores reales son capacidades futuras. La interfaz las identifica como tales. El ejemplo institucional no está conectado al check-in.
+## Reglas clínicas pendientes
 
-## Regla pendiente de revisión clínica antes de un piloto
+El antiguo corte de 7 y las ponderaciones del check-in se retiraron. La intensidad y el impacto ya no generan una derivación clínica. Peligro actual o pensamientos actuales de autolesión muestran ayuda urgente; preocupaciones pasadas por seguridad o falta de apoyo ofrecen recursos humanos; el resto recibe opciones generales sin clasificación de riesgo.
 
-Caso reproducible: peligro inmediato = false, intensidad = 0, impacto = 0, safety = "sometimes", apoyo = "yes". El puntaje actual es 4 y la ruta resultante es `steady` (el corte de `support` sigue siendo 7). Con peligro inmediato o safety = "now", el resultado sigue siendo siempre `urgent`.
+`clinical_referral_rule` y `yellow_cutoffs` están expresamente en `null` en `src/lib/clinicalProtocol.ts`. El triage clínico está deshabilitado. No se asigna verde por defecto al faltar una regla amarilla. El documento recibido no define fórmula de puntuación global: la demo solo calcula medias descriptivas de las tres dimensiones por separado y conserva la intensidad por separado.
 
-Se conserva deliberadamente el algoritmo en `src/lib/screening.ts`. Las nuevas pruebas describen su comportamiento; **no validan su idoneidad clínica**. Se retiró la frase «Lo que sientes parece manejable» y se ofrece apoyo también en `steady`. Antes de cualquier piloto, el responsable clínico debe revisar las preguntas, el puntaje, la respuesta a antecedentes de autolesión, las rutas y su adecuación por edad; documentar versión, responsable y aprobación.
+Antes de uso clínico se requiere revisar instrumento/redacción, cálculo, reglas de referencia, seguridad, adecuación por edad, consentimiento/asentimiento y operación humana, con responsables y versiones documentadas. El texto libre no se analiza automáticamente y se advierte antes de escribirlo. No hay bot de WhatsApp conectado ni motor de seguridad semántico.
 
-No usar esta demo como herramienta clínica ni presentar un resultado como evaluación individual. Para demostraciones institucionales, utilizar escenarios ficticios. Antes de datos reales también deben definirse operación humana, permisos, privacidad, retención y atención a menores. Los recursos de ayuda incluidos están orientados a México; no se ha implementado localización por país.
+## Datos y prueba
 
-## Guion breve con datos ficticios
+Usar escenarios ficticios. La casilla expresa comprensión de una demo, no un registro legal de consentimiento. Las respuestas permanecen en memoria mientras el diálogo está abierto; cerrar las elimina. No se guardan ni envían al abrir WhatsApp. Los recursos de crisis son de México; fuera del país se indica usar el servicio local.
 
-1. Inicio: mostrar un tema y explicar que la respuesta es prefijada.
-2. Check-in: consentimiento; a salvo; casi nada; poco; no; sí sé con quién. Mostrar salida neutral, apoyo y pausa.
-3. Repetir con intensidad e impacto máximos para mostrar acompañamiento.
-4. Repetir con peligro inmediato para mostrar la interrupción y enlaces de ayuda, sin realizar llamadas durante la demostración.
-5. Instituciones: cambiar entre esferas y tendencia; leer las unidades y la tabla accesible. Explicar qué capacidades siguen pendientes.
+Guion: probar un check-in breve; entrar a «La escuela me pesa»; omitir datos, aceptar el cuestionario, responder las 21 preguntas y ver un resumen sin clasificación. Repetir con filtro negativo u omisión para confirmar que no hay resultados inventados. Probar «Ayuda ahora» sin realizar llamadas ni enviar mensajes durante la demostración.
 
-## Verificación
-
-- `pnpm run check`: lint, pruebas de componentes/reglas y build.
-- `pnpm run test:e2e`: Chromium servido por Apache, cuatro tamaños, teclado, foco, axe, movimiento reducido y comprobación de solicitudes/almacenamiento.
-- `pnpm run verify:apache`: configuración real de Apache, caché, cabeceras y códigos HTTP.
-
-Axe y Chromium no sustituyen pruebas con VoiceOver/NVDA, dispositivos físicos ni revisión clínica. Las pruebas de privacidad cubren el código de esta demo; no controlan registros de acceso del proveedor de hosting. No publicar respuestas o identificadores en URLs ni logs.
+Ver [FEEDBACK-2026-09-22.md](FEEDBACK-2026-09-22.md) para la correspondencia con los materiales y [VERIFICATION.md](VERIFICATION.md) para pruebas. Chromium y axe no sustituyen dispositivos físicos, lectores de pantalla ni validación clínica. La ausencia de almacenamiento de respuestas no controla registros de acceso del proveedor de hosting.

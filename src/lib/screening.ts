@@ -10,18 +10,19 @@ export type ScreeningAnswers = {
   support: SupportAnswer;
 };
 
-export type ScreeningOutcome = "steady" | "support" | "urgent";
+export type ScreeningOutcome = "general" | "support" | "urgent";
 
-export function getScreeningOutcome(answers: ScreeningAnswers): ScreeningOutcome {
+export function getScreeningOutcome(
+  answers: ScreeningAnswers,
+): ScreeningOutcome {
   if (answers.immediateDanger || answers.safety === "now") {
     return "urgent";
   }
 
-  const safetyWeight = answers.safety === "sometimes" ? 4 : 0;
-  const isolationWeight = answers.support === "no" ? 2 : answers.support === "unsure" ? 1 : 0;
-  const score = answers.intensity + answers.impact + safetyWeight + isolationWeight;
-
-  return score >= 7 ? "support" : "steady";
+  // Directly stated support needs only. No score or clinical referral threshold.
+  if (answers.safety === "sometimes" || answers.support !== "yes")
+    return "support";
+  return "general";
 }
 
 export const defaultAnswers: ScreeningAnswers = {

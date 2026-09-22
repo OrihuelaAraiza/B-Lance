@@ -1,0 +1,29 @@
+La IA controla la capa de conversación, mientras que el motor controla la capa psicométrica:
+
+                ┌─────────────────────┐
+                │  Usuario / WhatsApp │
+                └──────────┬──────────┘
+                           ↓
+                ┌─────────────────────┐
+                │    IA conversacional│
+                │ tono + comprensión  │
+                └──────────┬──────────┘
+                           ↓
+              ┌────────────┴────────────┐
+              ↓                         ↓
+   ┌──────────────────┐       ┌──────────────────┐
+   │ Motor de seguridad│       │ Motor SISCO      │
+   │ siempre activo    │       │ determinista     │
+   └─────────┬────────┘       └─────────┬────────┘
+             │                          │
+             └────────────┬─────────────┘
+                          ↓
+                 ┌────────────────┐
+                 │ Motor de triage│
+                 └───────┬────────┘
+                         ↓
+        ┌────────────────┼─────────────────┐
+        ↓                ↓                 ↓
+      VERDE           AMARILLO            ROJO
+        ↓                ↓                 ↓
+     B-LANCE        Psicología       Crisis / ayuda

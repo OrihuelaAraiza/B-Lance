@@ -7,6 +7,7 @@ import App from "./App";
 import { NotFoundPage } from "./components/NotFoundPage";
 import "./styles.css";
 import "./visual-refinements.css";
+import "./feedback.css";
 
 const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
 const isKnownEntry = pathname === "/" || pathname === "/index.html";

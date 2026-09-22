@@ -10,7 +10,7 @@ describe("getScreeningOutcome", () => {
     expect(getScreeningOutcome({ ...defaultAnswers, safety: "now" })).toBe("urgent");
   });
 
-  it("routes sustained high distress to human support", () => {
+  it("shows support when the person has no one to talk to", () => {
     expect(
       getScreeningOutcome({
         ...defaultAnswers,
@@ -32,20 +32,20 @@ describe("getScreeningOutcome", () => {
     ).toBe("support");
   });
 
-  it("keeps low distress in the self-regulation path", () => {
-    expect(getScreeningOutcome({ ...defaultAnswers, intensity: 2, impact: 1 })).toBe("steady");
+  it("offers general resources without a clinical classification", () => {
+    expect(getScreeningOutcome({ ...defaultAnswers, intensity: 2, impact: 1 })).toBe("general");
   });
 });
 
-// Characterization of the existing demonstration rules, not clinical validation.
+// Technical checks of explicit support routing, not clinical validation.
 describe("demonstration rule boundaries", () => {
-  it("preserves the score boundary between six and seven", () => {
-    expect(getScreeningOutcome({ ...defaultAnswers, intensity: 3, impact: 3 })).toBe("steady");
-    expect(getScreeningOutcome({ ...defaultAnswers, intensity: 3, impact: 4 })).toBe("support");
+  it("does not create a clinical cutoff from intensity or impact", () => {
+    expect(getScreeningOutcome({ ...defaultAnswers, intensity: 3, impact: 3 })).toBe("general");
+    expect(getScreeningOutcome({ ...defaultAnswers, intensity: 4, impact: 4 })).toBe("general");
   });
 
-  it("documents low-intensity sometimes as steady pending clinical review", () => {
-    expect(getScreeningOutcome({ ...defaultAnswers, safety: "sometimes" })).toBe("steady");
+  it("shows human support for any explicitly stated past safety concern", () => {
+    expect(getScreeningOutcome({ ...defaultAnswers, safety: "sometimes" })).toBe("support");
   });
 
   it("always prioritizes immediate danger or current thoughts across all valid answers", () => {

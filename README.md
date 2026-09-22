@@ -1,6 +1,6 @@
-# B Lance by ROMI
+# B-lance · Equilibrio para tu mente
 
-Maqueta web funcional para una experiencia de contención emocional y orientación dirigida a jóvenes de 10 a 29 años en Iberoamérica.
+Maqueta web funcional para una experiencia de contención emocional y orientación dirigida a jóvenes en Iberoamérica.
 
 ## Qué incluye
 
@@ -19,6 +19,12 @@ Maqueta web funcional para una experiencia de contención emocional y orientaci�
 Esta maqueta no realiza un diagnóstico, no sustituye la atención profesional y no debe usarse como un sistema clínico en producción. El flujo de riesgo es demostrativo y debe pasar por validación clínica, regulatoria, de seguridad y de factores humanos antes de procesar datos reales.
 
 La demo funciona completamente en el navegador y no envía ni almacena respuestas.
+
+## Feedback de septiembre de 2026
+
+Logo oficial, Nabi, Manrope, «Para jóvenes», «Para profesionales» y «Zona segura». El chat abre WhatsApp al +52 56 6776 9449 con un saludo genérico. El recorrido académico opcional permite explorar las 21 preguntas suministradas sin clasificación ni derivación clínica. Las reglas pendientes permanecen en `null`.
+
+La especificación Euler, sus límites y la correspondencia de todos los materiales están documentados en [docs/FEEDBACK-2026-09-22.md](docs/FEEDBACK-2026-09-22.md).
 
 ## Desarrollo
 
@@ -41,7 +47,7 @@ El proyecto genera un sitio estático. Después de `pnpm run build`, se debe cop
 
 ## Demo institucional 0.2
 
-Se conserva la identidad visual y el algoritmo demostrativo. El menú móvil, la ayuda en cada pregunta, el foco del check-in y la pausa sincronizada refuerzan el recorrido. Los gráficos son cantidades ficticias, no porcentajes ni datos recibidos de usuarios.
+Se conserva la base visual de ROMI. El feedback del 22 de septiembre incorpora la identidad oficial de B-lance y retira los umbrales clínicos inventados. El menú móvil, la ayuda en cada pregunta, el foco del check-in y la pausa sincronizada refuerzan el recorrido. Los gráficos son cantidades ficticias, no porcentajes ni datos recibidos de usuarios.
 
 - Alcance, guion y revisión clínica pendiente: [docs/DEMO-READINESS.md](docs/DEMO-READINESS.md).
 - Paquete versionado, verificación Apache, publicación y restauración: [docs/HOSTGATOR.md](docs/HOSTGATOR.md).

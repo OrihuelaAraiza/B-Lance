@@ -56,10 +56,10 @@ describe("Check-in demonstration journey", () => {
     click("Ver opciones de apoyo"); expect(props.onOpenHelp).toHaveBeenCalledOnce();
   });
 
-  it("keeps the documented sometimes behavior, neutral wording and access to support", () => {
+  it("offers human support for past safety concerns regardless of intensity", () => {
     const props = callbacks(); render(<CheckIn open {...props} />);
     toSafety(); click("Me ha pasado, pero no ahora"); click("Sí, sé con quién");
-    expect(screen.getByRole("heading")).toHaveTextContent("No tienes que resolverlo todo hoy");
+    expect(screen.getByRole("heading")).toHaveTextContent("apoyo humano hoy");
     expect(screen.queryByText(/parece manejable/)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Ver opciones de apoyo" })).toBeInTheDocument();
     click("Hacer una pausa guiada"); expect(props.onOpenBreathing).toHaveBeenCalledOnce();

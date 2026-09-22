@@ -1,0 +1,79 @@
+INICIO
+  ↓
+1. Consentimiento / asentimiento + aviso de privacidad
+  ↓
+2. Captura mínima de datos
+   - Edad
+   - Sexo
+   - Nivel de escolaridad
+   - Plantel
+  ↓
+3. Inicio conversacional
+   - Pregunta breve sobre cómo se ha sentido
+   - Pregunta sobre escuela / semestre
+   - Permitir texto libre
+  ↓
+4. MOTOR DE SEGURIDAD analiza cada mensaje
+   ├── ¿Existe señal de riesgo inmediato?
+   │       ├── SÍ → INTERRUMPIR flujo habitual
+   │       │          → Protocolo de crisis
+   │       │          → Triage ROJO
+   │       │          → Recursos de ayuda humana
+   │       │
+   │       └── NO → continuar
+   ↓
+5. MOTOR DE DETECCIÓN TEMÁTICA
+   - estrés académico
+   - ansiedad/angustia
+   - tristeza
+   - problemas escolares
+   - irritabilidad
+   - concentración
+   - agotamiento
+   - etc.
+  ↓
+6. Si hay indicios de estrés académico:
+   → ofrecer SISCO SV-21
+   ↓
+7. ¿Acepta responder?
+   ├── NO
+   │    → no inventar clasificación SISCO
+   │    → conservar únicamente señales conversacionales
+   │    → orientación general
+   │    → valorar referencia según seguridad
+   │
+   └── SÍ
+        ↓
+8. Aplicar filtro SISCO
+   ¿Ha tenido preocupación/nerviosismo durante el semestre?
+        ├── NO
+        │    → concluir SISCO según instrumento
+        │    → continuar conversación si lo desea
+        │
+        └── SÍ
+             ↓
+9. Intensidad subjetiva 1–5
+             ↓
+10. Aplicación conversacional de los 21 reactivos
+     - 7 estresores
+     - 7 síntomas
+     - 7 afrontamiento
+             ↓
+11. Validación de respuestas
+     - completitud
+     - valores válidos
+     - consistencia técnica
+             ↓
+12. Cálculo SISCO
+             ↓
+13. Integración con MOTOR DE SEGURIDAD
+             ↓
+14. TRIAGE
+     🟢 VERDE
+     🟡 AMARILLO
+     🔴 ROJO
+             ↓
+15. Respuesta personalizada
+             ↓
+16. Registro anonimizado / estadística poblacional
+FIN

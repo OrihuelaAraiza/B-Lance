@@ -1,13 +1,13 @@
 {
-  "name": "B Lance by ROMI",
-  "short_name": "B Lance",
+  "name": "B-lance · Equilibrio para tu mente",
+  "short_name": "B-lance",
   "description": "Una primera pausa para entender cómo estás y encontrar el siguiente paso.",
   "icons": [
     {
-      "src": "/favicon.svg?v=2",
+      "src": "/favicon.svg?v=3",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
   "theme_color": "#fbf6ef",

@@ -126,7 +126,7 @@ test("all six environments play through one player and selection respects silenc
   await picker.click();
   await page.getByRole("radio", { name: /Ruido marrón/ }).check();
   expect(await audio.evaluate((element) => element.paused)).toBe(true);
-  await page.getByRole("link", { name: "B Lance by ROMI, ir al inicio" }).first().click();
+  await page.getByRole("link", { name: "B-lance, equilibrio para tu mente, ir al inicio" }).first().click();
   await expect(page.getByRole("group", { name: "Tu ambiente" })).not.toBeVisible();
   expect(errors).toEqual([]);
 });

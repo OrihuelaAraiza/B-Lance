@@ -35,9 +35,9 @@ export const spheres = [
 ];
 
 export const supportPaths = [
-  { number: "01", title: "Te escucha", text: "Mensajes breves, lenguaje cercano y sin interrogatorios.", color: "pink" },
-  { number: "02", title: "Te ayuda a ubicarlo", text: "Un check-in rápido reconoce la intensidad, el impacto y la seguridad.", color: "lilac" },
-  { number: "03", title: "Te da una salida", text: "Una pausa guiada, una persona de confianza o ayuda inmediata.", color: "mint" },
+  { number: "01", title: "Eliges por dónde empezar", text: "Un check-in, una pausa o un recurso. Tú marcas el ritmo y puedes salir cuando quieras.", color: "pink" },
+  { number: "02", title: "Ubicas lo que sientes", text: "Preguntas breves para reflexionar sobre tu día, sin diagnósticos ni etiquetas.", color: "lilac" },
+  { number: "03", title: "Encuentras un siguiente paso", text: "Prueba una herramienta, habla con alguien de confianza o encuentra ayuda inmediata.", color: "mint" },
 ];
 
 export const demoViews = {
