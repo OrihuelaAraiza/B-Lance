@@ -2,11 +2,13 @@ import {
   ArrowRight,
   Check,
   ExternalLink,
+  FileText,
   LockKeyhole,
   Phone,
   ShieldCheck,
 } from "lucide-react";
 import { lifeLineUrl } from "../data/contact";
+import { legalDocuments } from "../data/legal";
 import { WhatsAppLink } from "./WhatsAppLink";
 
 export function SafeZone() {
@@ -135,6 +137,31 @@ export function SafeZone() {
               necesitas terminar un cuestionario para usarlos.
             </p>
           </details>
+        </div>
+        <div className="legal-documents" aria-labelledby="legal-documents-title">
+          <h3 id="legal-documents-title">Términos y privacidad</h3>
+          <p>
+            Consulta los documentos completos de B-lance. Última actualización:
+            {" "}<time dateTime="2026-09-22">22 de septiembre de 2026</time>.
+          </p>
+          <div className="legal-documents__links">
+            {legalDocuments.map((document) => (
+              <a
+                key={document.href}
+                href={document.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="legal-documents__link"
+              >
+                <FileText aria-hidden="true" />
+                <span>
+                  <strong>{document.title}</strong>
+                  <small>PDF · {document.pages} páginas · Nueva pestaña</small>
+                </span>
+                <ExternalLink aria-hidden="true" />
+              </a>
+            ))}
+          </div>
         </div>
         <div className="safe-contact">
           <div>

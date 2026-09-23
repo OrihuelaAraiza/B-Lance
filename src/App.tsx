@@ -16,6 +16,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import { spheres, supportPaths } from "./data/demo";
+import { legalDocuments } from "./data/legal";
 import { BrandMark, BrandSymbol } from "./components/BrandMark";
 import { BreathingRoom } from "./components/BreathingRoom";
 import { CheckIn } from "./components/CheckIn";
@@ -473,6 +474,19 @@ function App() {
             <span>Demo · 2026</span>
           </div>
         </div>
+        <nav className="shell site-footer__legal" aria-label="Documentos legales">
+          {legalDocuments.map((document) => (
+            <a
+              key={document.href}
+              href={document.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {document.title} <span>(PDF)</span>
+            </a>
+          ))}
+          <span>Se abren en una nueva pestaña.</span>
+        </nav>
       </footer>
 
       <m.button
